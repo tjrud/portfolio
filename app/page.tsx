@@ -269,7 +269,7 @@ function CategoryBar({ locale, setLocale, reset, inverse = false }: { locale: Lo
 function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (locale: Locale) => void; choose: (mode: Exclude<Mode, null>) => void }) {
   const t = ui[locale];
   return <main className="mode-gate">
-    <div className="mode-gate-top"><a className="brand" href="#">SK<span>°</span></a><LocaleSwitcher locale={locale} setLocale={setLocale} /></div>
+    <div className="mode-gate-top"><LocaleSwitcher locale={locale} setLocale={setLocale} /></div>
     <div className="mode-gate-copy"><p>{t.choose}</p><h1>{t.gateTitle}</h1></div>
     <div className="mode-options">
       <button className="mode-option mode-option-info" onClick={() => choose('info')}>
@@ -303,7 +303,7 @@ function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     : [['education', '학력'], ['research', '연구 관심 분야'], ['skills', '기술'], ['work', '경력'], ['projects', '프로젝트 및 활동'], ['awards', '수상'], ['other', '기타 정보']];
   return <main className="info-mode"><CategoryBar locale={locale} setLocale={setLocale} reset={reset} />
     <div className="cv-layout"><aside className="cv-sidebar">
-      <div><a className="brand light-brand" href="#cv-top">SK<span>°</span></a><p>INDEX</p></div>
+      <div><a className="brand light-brand" href="#cv-top">SeoKyoung Kim</a><p>INDEX</p></div>
       <nav>{sections.map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
       <div className="cv-side-bottom"><span>© 2026 SEOKYOUNG KIM.</span></div>
     </aside>
