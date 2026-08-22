@@ -4,21 +4,18 @@ const projects = [
     title: 'Industrial Anomaly Detection',
     description: 'An end-to-end visual inspection workflow: image preprocessing, SAM-assisted labeling, ensemble anomaly scoring, training, deployment, and monitoring.',
     tags: ['Computer Vision', 'MLOps', '2025—26'],
-    className: 'dark',
   },
   {
     number: '02',
     title: 'Autonomous Driving RC Car',
     description: 'ROS2 lane perception, YOLOv8 object avoidance, lane-change verification, and ONNX inference built for embedded real-time control.',
     tags: ['ROS2', 'YOLOv8', 'Edge AI'],
-    className: 'lime',
   },
   {
     number: '03',
     title: 'Intersection Vehicle Counter',
     description: 'A YOLO + BoT-SORT video analysis system for vehicle detection, tracking, and directional counting—even under occlusion and low light.',
     tags: ['Tracking', 'ReID', 'Dashboard'],
-    className: 'coral',
     href: 'https://intersection-vehicle-counter-dashbo.vercel.app/',
   },
 ];
@@ -65,7 +62,6 @@ export default function Home() {
           <p>Autonomous systems, computer vision, and production AI—designed to perceive, decide, and move in the real world.</p>
           <a href="#work" className="round-link" aria-label="View selected work">↓</a>
         </div>
-        <div className="radar" aria-hidden="true"><i /><i /><i /><span /></div>
       </section>
 
       <section className="work shell" id="work">
@@ -74,7 +70,7 @@ export default function Home() {
           {projects.map((project) => {
             const Card = project.href ? 'a' : 'article';
             return (
-              <Card className={`project-card ${project.className}`} key={project.number} {...(project.href ? { href: project.href, target: '_blank', rel: 'noreferrer' } : {})}>
+              <Card className="project-card" key={project.number} {...(project.href ? { href: project.href, target: '_blank', rel: 'noreferrer' } : {})}>
                 <div className="project-top"><span>{project.number}</span><span>{project.href ? 'Visit ↗' : 'Case study'}</span></div>
                 <div><h2>{project.title}</h2><p>{project.description}</p></div>
                 <div className="tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
@@ -104,7 +100,6 @@ export default function Home() {
         <div className="section-head"><p>Profile</p><p>Curious by design</p></div>
         <div className="about-grid">
           <div className="about-copy">
-            <span className="big-mark">*</span>
             <h2>Engineering AI that holds up outside the lab.</h2>
             <p>I’m SeoKyoung Kim, an AI student and engineer focused on autonomy, perception, and deployable ML systems. I like the point where research meets noisy sensors, limited compute, and real users.</p>
             <div className="contact-links"><a href="mailto:sk0829@hanyang.ac.kr">Email ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">GitHub ↗</a></div>
@@ -117,8 +112,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="skill-band" aria-label="Technical skills">
-        <div className="skill-track">{[...skills, ...skills].map((skill, i) => <span key={`${skill}-${i}`}>{skill} <b>✳</b></span>)}</div>
+      <section className="skills shell" aria-label="Technical skills">
+        <div className="section-head"><p>Toolbox</p><p>Core technologies</p></div>
+        <div className="skill-list">{skills.map(skill => <span key={skill}>{skill}</span>)}</div>
       </section>
 
       <section className="recognition shell">
