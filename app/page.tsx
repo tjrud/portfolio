@@ -74,6 +74,110 @@ const skillGroups = [
   ['Robotics & Embedded', 'ROS2 · rclcpp · rclpy · Sensor integration'], ['Web', 'Next.js · React · TypeScript · Vercel'], ['Collaboration', 'Notion · Slack'],
 ];
 
+const sourceEducation = [
+  { title: 'B.S. in Artificial Intelligence (Expected Feb. 2027)', meta: 'Hanyang University ERICA | Mar. 2025 – Feb. 2027' },
+  { title: 'B.S. in Computer and Information Communication Engineering', meta: 'Daejeon University | Mar. 2023 – Feb. 2025' },
+];
+
+const sourceResearch = [
+  { title: 'Autonomous Driving and Flight Systems', bullets: ['Perception, localization, sensor fusion, and motion control for autonomous vehicles and unmanned aerial systems', 'Vision-based navigation, obstacle detection, path planning, and real-time decision-making in dynamic environments'] },
+  { title: 'large language model', bullets: ['Application of LLMs in multimodal systems and domain-specific adaptation', 'Efficient fine-tuning, prompt engineering, and deployment in real-world applications'] },
+  { title: 'Anomaly Detection', bullets: ['Vision-based anomaly detection in manufacturing, medical imaging, and autonomous systems', 'Integration with MLOps pipelines for real-time monitoring and automated response'] },
+];
+
+const sourceSkills = [
+  ['Language', 'Python, C++'],
+  ['Machine Learning / AI', 'PyTorch, OpenCV, YOLO'],
+  ['MLOps & Tools', 'Git/GitHub, ONNX, MLflow, Google Cloud'],
+  ['Robotics & Embedded', 'ROS2, rclcpp, rclpy, Sensor integration (IMU, camera, etc.)'],
+  ['Web Development', 'Next.js, React, TypeScript, Vercel'],
+  ['Other', 'Collaboration: Notion, Slack'],
+];
+
+const sourceWork = [
+  {
+    title: 'Molpaxbio — Internship (Jan 2025 – Feb 2025)',
+    meta: 'Molpaxbio Co., Ltd. | Daejeon, Korea | AI-based digital pathology and cancer diagnostics startup',
+    bullets: [
+      'Participated in CES preparation, including training on AI diagnostic software and algorithms',
+      'Assisted at the CES exhibition booth, engaging with industry experts and addressing inquiries',
+      'Gained hands-on experience with medical imaging data preprocessing, including noise removal, filtering, and basic pattern analysis',
+      'Learned and applied foundational techniques in medical imaging-based AI analysis using specialized software tools',
+      'Developed skills in AI-based medical video classification and anomaly detection models, conducting experiments with labeled datasets',
+      'Supported team projects by optimizing data processing workflows and evaluating model performance',
+    ],
+  },
+  {
+    title: 'HCNC — Internship (Jul 2025 – Aug 2025)',
+    meta: 'HCNC Co., Ltd. | Pangyo, Korea | Smart factory and AI-integrated industrial solutions company',
+    bullets: [
+      'Learned core concepts of AI-based visual inspection and anomaly detection for manufacturing surface quality control',
+      'Studied industrial AI applications and analyzed how real-world manufacturing data differs from research datasets due to noise, imbalance, and incomplete labeling',
+      'Researched recent trends in anomaly detection, synthetic data generation, and data augmentation techniques for industrial defect inspection',
+      'Participated in capstone project planning, including dataset collection strategy, model training direction, and MLOps-based system design',
+      'Gained practical understanding of the full AI development workflow, from data preprocessing and quality management to model operation and system maintenance',
+    ],
+  },
+  {
+    title: 'HCNC — Internship (Jan 2026 – Feb 2026 )',
+    meta: 'HCNC Co., Ltd. | Pangyo, Korea | Smart factory and AI-integrated industrial solutions company',
+    bullets: [
+      'Conducted research on AI vision-based anomaly detection models for industrial surface defect inspection, with a focus on steel and H-beam surface defects',
+      'Collected and analyzed public industrial defect datasets, including Severstal, NEU, and MVTec, considering domain-specific factors such as lighting variation and surface reflection',
+      'Designed an ensemble-based meta-model structure by combining fast classification models and precise localization models using normalized anomaly scores and feature representations',
+      'Researched automated labeling workflows using SAM, CVAT, and AnyLabeling to reduce labeling bottlenecks in large-scale industrial datasets',
+      'Studied MLOps pipeline components, including data and model versioning, retraining triggers, performance drift monitoring, and automated operation strategies',
+    ],
+  },
+];
+
+const sourceProjects = [
+  { title: 'AI Vision-Based Anomaly Detection: Image Data Preprocessing and MLOps Application Development | 2025 ~ 2026', bullets: ['Automated image data preprocessing & labeling pipeline development', 'MLOps application for training, deployment, and visualization'] },
+  { title: 'Autonomous Driving RC Car Development | ORDA, 2025', bullets: ['Implemented lane detection (1-lane / 2-lane mode) and object detection (YOLOv8-based vehicle detection & avoidance) modules in ROS2', 'Developed obstacle avoidance logic with offset calculation and lane-change completion verification', 'Converted YOLOv8n to ONNX for real-time inference on embedded devices'] },
+  { title: 'LG Innotek AX Expert Training Program | AISI, 2026 | AI Transformation & Manufacturing AI Training Assistant', bullets: ['Supported hands-on AI/AX training sessions for manufacturing professionals', 'Assisted with Python, data analysis, machine learning practice, debugging, and lab environment setup', 'Guided trainees through practical exercises and helped resolve technical issues during sessions'] },
+  { title: '제 1회 한양대학교 ERICA 자율주행 경진대회 주관 | ORDA, 2026.01', bullets: ['Organized and operated the 1st Hanyang University ERICA Autonomous Driving Competition', 'Coordinated participants, competition schedules, event logistics, and on-site communication', 'Managed registration, safety procedures, and overall event flow to ensure smooth competition operations'] },
+  { title: '65th National Undergraduate Symposium in Biology | NusB, 2026 | Academic Committee Member', bullets: ['Served as a member of the Academic Committee, participating in neuroscience paper review, study, and presentation activities', 'Studied neural replay, memory, and predictive brain mechanisms through neuroscience research papers', 'Explored connections between biological learning and AI, including experience replay, internal models, and generative prediction', 'Developing a rule-based manuscript revision tool for Division 2 to support automated editorial review and consistency checks'] },
+  { title: 'AI-Based Intersection Vehicle Counting & Monitoring System | Personal Project, 2026', bullets: ['Developed a YOLO-based video analysis system to detect, track, and count vehicles entering and exiting intersections', 'Improved counting accuracy under occlusion and nighttime conditions using BoT-SORT and ReID-based tracking', 'Built an integrated dashboard for analysis control, progress monitoring, and automated CSV result visualization'], href: 'https://intersection-vehicle-counter-dashbo.vercel.app/' },
+];
+
+const sourceAwards = [
+  { title: '2024 자율주행 자동차 경진대회, 대상', detail: '소형 자율주행 로봇, | 대전대학교 2024.04' },
+  { title: '폭스바겐우리재단 씨:미 해커톤, 최우수상', detail: '자율주행 스케일카, | 폭스바겐우리재단 2025.07' },
+  { title: '제 8회 국민대학교 자율주행 경진대회, 3등', detail: '자율주행 스케일카, | 국민대학교 2025.08' },
+  { title: '2026년 한양대학교 ERICA 소프트웨어융합대학 캡스톤디자인 경진대회 최우수상', detail: 'Image Data Preprocessing and MLOps Application, | 한양대학교 ERICA 2026.06' },
+];
+
+const sourceOtherAwards = [
+  '2023년 청년 소셜 창업 해커톤 장려상',
+  '2023 TP사업(지역협력기반 대학연합 IP 창업경진대회 최우수상',
+  '2023 로컬크리에이터 양성사업 창업 아이디어 경진대회 최우수상',
+  '2023 대전 지역사회 문제해결형 창업 아이디어 경진대회 우수상',
+  '2023 초중고대연합 창업경진대회 우수상',
+  '2023학년도 웰니스헬스케어 & 문화·디자인 특성화 분야 지역산업 분석 공모전 우수상',
+  '2024 Start 창업경진대회 우수상',
+  '2024 COSS 스타트업 경진대회 장려상',
+  '2024 초중고대연합 창업경진대회 장려상',
+  '2024년 청년 소셜 창업 해커톤 우수상',
+  '2024 로컬크리에이터 아이디어 캠프 창업경진대회 우수상',
+  '2024 ESG 창업 아이디어 펀딩스쿨 대상',
+  '2025-2학기 Deep Tech Audition (한양대학교 ERICA) SEED상',
+  '2025년 COSS-SCOUT 첨단기술 창업경진대회 우수상',
+  '한양대 ERICA CTO-스타트업톤 장려상',
+  '2026-1학기 Deep Tech Audition (한양대학교 ERICA) SEED상',
+  '2026 경기실록지리지 경진대회 장려상',
+];
+
+const sourceOtherActivities = [
+  '창의설계경진대회 후속지원 프로그램 | 2024.12.23. ~ 02.03',
+  '말레이시아 자율주행 배달로봇 ‘HELLO ROBOTICS’ 마케팅 전략 수립 | 2025.01',
+  '한양대 ERICA RC center 멘토, | 2025.09 ~ 2026.06',
+  '제 1회 한양대학교 ERICA 자율주행 경진대회 주관 | 2025.10 ~ 2026.01',
+  '2026년 청년창업유망팀 300 성장트랙 진행 중',
+  '말레이시아 창업탐방, 2025.01.21 ~ 25',
+  'COSS-SCOUT 첨단기술 창업경진대회',
+  '한양대 ERICA RC 멘토 활동',
+];
+
 const playTopics: Array<{ key: string; label: Localized; code: string; title: Localized; body: Localized }> = [
   { key: 'vision', code: '01', label: { en: 'VISION', ko: '비전' }, title: { en: 'Seeing industrial and road scenes', ko: '산업 현장과 도로 장면을 보는 기술' }, body: { en: 'Surface-defect inspection, medical image preprocessing, and vehicle detection are the recurring vision problems in my work.', ko: '표면 결함 검사, 의료 영상 전처리, 차량 탐지는 제가 반복해서 다뤄온 비전 문제입니다.' } },
   { key: 'robotics', code: '02', label: { en: 'ROBOTICS', ko: '로보틱스' }, title: { en: 'Perception connected to motion', ko: '인지에서 움직임까지' }, body: { en: 'With ROS2, YOLOv8, and ONNX, I built lane perception, vehicle avoidance, and lane-change verification for an RC car.', ko: 'ROS2, YOLOv8, ONNX로 RC카의 차선 인식, 차량 회피, 차선 변경 완료 검증을 구현했습니다.' } },
@@ -117,47 +221,60 @@ function CvSection({ id, number, title, children }: { id: string; number: string
   return <section className="cv-section" id={id}><header><span>{number}</span><h2>{title}</h2></header>{children}</section>;
 }
 
+function SourceDetail({ title, meta, bullets, href }: { title: string; meta?: string; bullets?: string[]; href?: string }) {
+  return <article className="source-detail">
+    <h3>{title}</h3>
+    {meta && <p className="source-meta">{meta}</p>}
+    {bullets && <ul>{bullets.map(item => <li key={item}>{item}</li>)}</ul>}
+    {href && <a href={href} target="_blank" rel="noreferrer">{href}</a>}
+  </article>;
+}
+
 function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (locale: Locale) => void; reset: () => void }) {
   const t = ui[locale];
-  const localize = (value: Localized) => value[locale];
   return <main className="info-mode"><CategoryBar locale={locale} setLocale={setLocale} reset={reset} />
     <div className="cv-layout"><aside className="cv-sidebar">
       <div><a className="brand light-brand" href="#cv-top">SK<span>°</span></a><p>INDEX</p></div>
-      <nav>{[['education', t.education], ['internships', t.internships], ['projects', t.projects], ['activities', t.activities], ['awards', t.awards], ['skills', t.skills]].map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
+      <nav>{[['education', 'Education'], ['research', 'Research Interests'], ['skills', 'Skills'], ['work', 'Work Experience'], ['projects', 'Projects & Activities'], ['awards', 'Awards'], ['other', 'Other Information']].map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
       <div className="cv-side-bottom"><span>© 2026 SEOKYOUNG KIM.</span></div>
     </aside>
     <article className="cv-document" id="cv-top">
-      <header className="cv-hero"><p>{t.profile} / 2026</p><h1>SeoKyoung<br />Kim.</h1><div><strong>{t.current}</strong><span>{t.intro}</span></div></header>
+      <header className="cv-hero source-hero"><p>{t.profile} / 2026</p><h1>김서경<br />SeoKyoung Kim</h1><div><strong>E-mail : sk0829@hanyang.ac.kr</strong><span>Github : https://github.com/tjrud</span></div></header>
 
-      <CvSection id="education" number="01" title={t.education}>
-        {education.map(item => <article className="cv-entry" key={item.date}><p className="cv-date">{item.date}</p><div><h3>{localize(item.degree)}</h3><strong>{item.school}</strong><p>{localize(item.status)}</p></div></article>)}
+      <CvSection id="education" number="01" title="Education">
+        <div className="source-list">{sourceEducation.map(item => <SourceDetail key={item.title} title={item.title} meta={item.meta} />)}</div>
       </CvSection>
 
-      <CvSection id="internships" number="02" title={t.internships}>
-        {experience.map(item => <article className="cv-entry" key={item.date + item.company}><p className="cv-date">{item.date}</p><div><h3>{item.company} <em>— {localize(item.role)}</em></h3><p>{localize(item.detail)}</p></div></article>)}
+      <CvSection id="research" number="02" title="Research Interests">
+        <div className="source-list">{sourceResearch.map(item => <SourceDetail key={item.title} title={item.title} bullets={item.bullets} />)}</div>
       </CvSection>
 
-      <CvSection id="projects" number="03" title={t.projects}>
-        {projects.map(project => <article className="cv-entry project-entry" key={project.number}><p className="cv-date">{project.date}</p><div><h3>{localize(project.title)}</h3><p>{localize(project.detail)}</p><div className="inline-tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>{project.href && <a href={project.href} target="_blank" rel="noreferrer">{t.live}</a>}</div></article>)}
+      <CvSection id="skills" number="03" title="Skills">
+        <div className="skill-table">{sourceSkills.map(([group, list]) => <div key={group}><strong>[ {group} ]</strong><span>{list}</span></div>)}</div>
       </CvSection>
 
-      <CvSection id="activities" number="04" title={t.activities}>
-        {activities.map(item => <article className="cv-entry compact" key={item.title.en}><p className="cv-date">{item.date}</p><div><h3>{localize(item.title)}</h3><p>{localize(item.detail)}</p></div></article>)}
+      <CvSection id="work" number="04" title="Work Experience">
+        <div className="source-list">{sourceWork.map(item => <SourceDetail key={item.title} title={item.title} meta={item.meta} bullets={item.bullets} />)}</div>
       </CvSection>
 
-      <CvSection id="awards" number="05" title={t.awards}>
-        <div className="cv-awards">{awards.map(item => <article key={item.event.en}><span>{item.year}</span><h3>{localize(item.event)}</h3><p>{localize(item.result)}</p></article>)}</div>
+      <CvSection id="projects" number="05" title="Projects & Activities">
+        <div className="source-list">{sourceProjects.map(item => <SourceDetail key={item.title} title={item.title} bullets={item.bullets} href={item.href} />)}</div>
       </CvSection>
 
-      <CvSection id="skills" number="06" title={t.skills}>
-        <div className="skill-table">{skillGroups.map(([group, list]) => <div key={group}><strong>{group}</strong><span>{list}</span></div>)}</div>
+      <CvSection id="awards" number="06" title="Awards">
+        <div className="source-list award-source-list">{sourceAwards.map(item => <SourceDetail key={item.title} title={item.title} bullets={[item.detail]} />)}</div>
       </CvSection>
 
-      <CvSection id="other" number="07" title={t.other}>
-        <div className="other-grid"><article><span>LANGUAGE</span><h3>TOEIC 935</h3><p>YBM · DEC. 2024</p></article><article><span>WORK</span><h3>{locale === 'en' ? 'Attraction operations · Store manager · Bartender' : '놀이시설 운영 · 매장 관리 · 바텐더'}</h3><p>2018—2020</p></article><article><span>SERVICE</span><h3>{locale === 'en' ? 'Specialized CBRN unit' : '화생방 특수임무 부대'}</h3><p>MAR. 2021—DEC. 2022</p></article></div>
+      <CvSection id="other" number="07" title="Other Information">
+        <div className="source-list other-source-list">
+          <SourceDetail title="Language Skills" bullets={['TOEIC 935 | YBM 2024.12']} />
+          <SourceDetail title="Extracurricular Work Experience" bullets={['서울랜드 - 어트랙션, 2018.01 ~ 2018.05', 'Snowy Village - Manager, 2018.06 ~ 2019.06', 'K - Pop Karaoke - Bartender, 2019.07 ~ 2020.03', '국군화생방방호사령부 제 24특임대대(화생방특수임무단), 2021.03 ~ 2022.12']} />
+          <SourceDetail title="Extracurricular Awards" bullets={sourceOtherAwards} />
+          <SourceDetail title="Extracurricular Activities" bullets={sourceOtherActivities} />
+        </div>
       </CvSection>
 
-      <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">{t.source}</a></div></footer>
+      <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">Github : https://github.com/tjrud ↗</a></div></footer>
     </article></div>
   </main>;
 }
