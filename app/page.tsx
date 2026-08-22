@@ -178,6 +178,71 @@ const sourceOtherActivities = [
   '한양대 ERICA RC 멘토 활동',
 ];
 
+const verifiedEnglishTerms: Record<string, string> = {
+  'B.S. in Artificial Intelligence (Expected Feb. 2027)': 'B.S. in Artificial Intelligence — Expected Feb. 2027',
+  'B.S. in Computer and Information Communication Engineering': 'B.S. in Computer and Information Communication Engineering — Completed Feb. 2025',
+  'Autonomous Driving and Flight Systems': 'Autonomous Ground and Aerial Systems',
+  'large language model': 'Large Language Models',
+  'Anomaly Detection': 'Vision-Based Anomaly Detection',
+  'Language': 'Programming Languages',
+  'Machine Learning / AI': 'AI & Machine Learning',
+  'MLOps & Tools': 'MLOps & Development Tools',
+  'Robotics & Embedded': 'Robotics & Embedded Systems',
+  'Other': 'Collaboration Tools',
+  'Molpaxbio — Internship (Jan 2025 – Feb 2025)': 'AI Intern | Molpaxbio | Jan–Feb 2025',
+  'Molpaxbio Co., Ltd. | Daejeon, Korea | AI-based digital pathology and cancer diagnostics startup': 'Molpaxbio Co., Ltd. | Daejeon, South Korea | AI-Based Digital Pathology and Cancer Diagnostics Startup',
+  'HCNC — Internship (Jul 2025 – Aug 2025)': 'AI Intern | HCNC | Jul–Aug 2025',
+  'HCNC — Internship (Jan 2026 – Feb 2026 )': 'AI Intern | HCNC | Jan–Feb 2026',
+  'HCNC Co., Ltd. | Pangyo, Korea | Smart factory and AI-integrated industrial solutions company': 'HCNC Co., Ltd. | Pangyo, South Korea | Smart Factory and AI-Integrated Industrial Solutions Company',
+  'AI Vision-Based Anomaly Detection: Image Data Preprocessing and MLOps Application Development | 2025 ~ 2026': 'Vision-Based Anomaly Detection: Image Preprocessing and MLOps Application Development | 2025–2026',
+  'Autonomous Driving RC Car Development | ORDA, 2025': 'Autonomous RC Car Development | ORDA | 2025',
+  'LG Innotek AX Expert Training Program | AISI, 2026 | AI Transformation & Manufacturing AI Training Assistant': 'Teaching Assistant, LG Innotek AX Expert Training Program | AISI | 2026',
+  '제 1회 한양대학교 ERICA 자율주행 경진대회 주관 | ORDA, 2026.01': 'Organizer, 1st Hanyang University ERICA Autonomous Driving Competition | ORDA | Jan 2026',
+  '65th National Undergraduate Symposium in Biology | NusB, 2026 | Academic Committee Member': 'Academic Committee Member, 65th National Undergraduate Symposium in Biology | NusB | 2026',
+  'AI-Based Intersection Vehicle Counting & Monitoring System | Personal Project, 2026': 'AI-Based Intersection Vehicle Counting and Monitoring System | Personal Project | 2026',
+  '2024 자율주행 자동차 경진대회, 대상': 'Grand Prize, 2024 Daejeon University Autonomous Vehicle Competition',
+  '소형 자율주행 로봇, | 대전대학교 2024.04': 'Small Autonomous Mobile Robot | Daejeon University | Apr 2024',
+  '폭스바겐우리재단 씨:미 해커톤, 최우수상': 'Excellence Award, Volkswagen Group Woori Foundation SEA:ME Hackathon',
+  '자율주행 스케일카, | 폭스바겐우리재단 2025.07': 'Autonomous Scale Car | Volkswagen Group Woori Foundation | Jul 2025',
+  '제 8회 국민대학교 자율주행 경진대회, 3등': 'Third Place, 8th Kookmin University Autonomous Driving Competition',
+  '자율주행 스케일카, | 국민대학교 2025.08': 'Autonomous Scale Car | Kookmin University | Aug 2025',
+  '2026년 한양대학교 ERICA 소프트웨어융합대학 캡스톤디자인 경진대회 최우수상': 'Excellence Award, 2026 Hanyang University ERICA College of Computing Capstone Design Competition',
+  'Image Data Preprocessing and MLOps Application, | 한양대학교 ERICA 2026.06': 'Image Data Preprocessing and MLOps Application | Hanyang University ERICA | Jun 2026',
+  'Language Skills': 'Language Proficiency',
+  'Extracurricular Work Experience': 'Additional Work Experience',
+  '서울랜드 - 어트랙션, 2018.01 ~ 2018.05': 'Attraction Operator | Seoul Land | Jan–May 2018',
+  'Snowy Village - Manager, 2018.06 ~ 2019.06': 'Store Manager | Snowy Village | Jun 2018–Jun 2019',
+  'K - Pop Karaoke - Bartender, 2019.07 ~ 2020.03': 'Bartender | K-Pop Karaoke | Jul 2019–Mar 2020',
+  '국군화생방방호사령부 제 24특임대대(화생방특수임무단), 2021.03 ~ 2022.12': '24th Special Mission Battalion, Republic of Korea CBRN Defense Command | Mar 2021–Dec 2022',
+  'Extracurricular Awards': 'Additional Awards',
+  '2023년 청년 소셜 창업 해커톤 장려상': 'Encouragement Award, 2023 Youth Social Entrepreneurship Hackathon',
+  '2023 TP사업(지역협력기반 대학연합 IP 창업경진대회 최우수상': 'Excellence Award, 2023 TP Program Inter-University IP Startup Competition',
+  '2023 로컬크리에이터 양성사업 창업 아이디어 경진대회 최우수상': 'Excellence Award, 2023 Local Creator Development Program Startup Idea Competition',
+  '2023 대전 지역사회 문제해결형 창업 아이디어 경진대회 우수상': 'Outstanding Award, 2023 Daejeon Community Problem-Solving Startup Idea Competition',
+  '2023 초중고대연합 창업경진대회 우수상': 'Outstanding Award, 2023 Inter-School Startup Competition',
+  '2023학년도 웰니스헬스케어 & 문화·디자인 특성화 분야 지역산업 분석 공모전 우수상': 'Outstanding Award, 2023 Regional Industry Analysis Competition — Wellness Healthcare, Culture & Design',
+  '2024 Start 창업경진대회 우수상': 'Outstanding Award, 2024 START Startup Competition',
+  '2024 COSS 스타트업 경진대회 장려상': 'Encouragement Award, 2024 COSS Startup Competition',
+  '2024 초중고대연합 창업경진대회 장려상': 'Encouragement Award, 2024 Inter-School Startup Competition',
+  '2024년 청년 소셜 창업 해커톤 우수상': 'Outstanding Award, 2024 Youth Social Entrepreneurship Hackathon',
+  '2024 로컬크리에이터 아이디어 캠프 창업경진대회 우수상': 'Outstanding Award, 2024 Local Creator Idea Camp Startup Competition',
+  '2024 ESG 창업 아이디어 펀딩스쿨 대상': 'Grand Prize, 2024 ESG Startup Idea Funding School',
+  '2025-2학기 Deep Tech Audition (한양대학교 ERICA) SEED상': 'SEED Award, Fall 2025 Deep Tech Audition — Hanyang University ERICA',
+  '2025년 COSS-SCOUT 첨단기술 창업경진대회 우수상': 'Outstanding Award, 2025 COSS-SCOUT Advanced Technology Startup Competition',
+  '한양대 ERICA CTO-스타트업톤 장려상': 'Encouragement Award, Hanyang University ERICA CTO Start-up-thon',
+  '2026-1학기 Deep Tech Audition (한양대학교 ERICA) SEED상': 'SEED Award, Spring 2026 Deep Tech Audition — Hanyang University ERICA',
+  '2026 경기실록지리지 경진대회 장려상': 'Encouragement Award, 2026 Gyeonggi Sillok Jiriji University Startup Alliance Camp',
+  'Extracurricular Activities': 'Additional Activities',
+  '창의설계경진대회 후속지원 프로그램 | 2024.12.23. ~ 02.03': 'Creative Design Competition Follow-Up Support Program | Dec 23, 2024–Feb 3, 2025',
+  '말레이시아 자율주행 배달로봇 ‘HELLO ROBOTICS’ 마케팅 전략 수립 | 2025.01': 'Marketing Strategy Development for HELLO ROBOTICS, a Malaysian Autonomous Delivery Robot Company | Jan 2025',
+  '한양대 ERICA RC center 멘토, | 2025.09 ~ 2026.06': 'Residential College Center Mentor | Hanyang University ERICA | Sep 2025–Jun 2026',
+  '제 1회 한양대학교 ERICA 자율주행 경진대회 주관 | 2025.10 ~ 2026.01': 'Organizer, 1st Hanyang University ERICA Autonomous Driving Competition | Oct 2025–Jan 2026',
+  '2026년 청년창업유망팀 300 성장트랙 진행 중': '2026 Promising Student Startup Team 300 — Growth Track | Ongoing',
+  '말레이시아 창업탐방, 2025.01.21 ~ 25': 'Malaysia Startup Exploration Program | Jan 21–25, 2025',
+  'COSS-SCOUT 첨단기술 창업경진대회': 'COSS-SCOUT Advanced Technology Startup Competition',
+  '한양대 ERICA RC 멘토 활동': 'Residential College Mentoring | Hanyang University ERICA',
+};
+
 const playTopics: Array<{ key: string; label: Localized; code: string; title: Localized; body: Localized }> = [
   { key: 'vision', code: '01', label: { en: 'VISION', ko: '비전' }, title: { en: 'Seeing industrial and road scenes', ko: '산업 현장과 도로 장면을 보는 기술' }, body: { en: 'Surface-defect inspection, medical image preprocessing, and vehicle detection are the recurring vision problems in my work.', ko: '표면 결함 검사, 의료 영상 전처리, 차량 탐지는 제가 반복해서 다뤄온 비전 문제입니다.' } },
   { key: 'robotics', code: '02', label: { en: 'ROBOTICS', ko: '로보틱스' }, title: { en: 'Perception connected to motion', ko: '인지에서 움직임까지' }, body: { en: 'With ROS2, YOLOv8, and ONNX, I built lane perception, vehicle avoidance, and lane-change verification for an RC car.', ko: 'ROS2, YOLOv8, ONNX로 RC카의 차선 인식, 차량 회피, 차선 변경 완료 검증을 구현했습니다.' } },
@@ -232,49 +297,53 @@ function SourceDetail({ title, meta, bullets, href }: { title: string; meta?: st
 
 function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (locale: Locale) => void; reset: () => void }) {
   const t = ui[locale];
+  const text = (value: string) => locale === 'en' ? (verifiedEnglishTerms[value] ?? value) : value;
+  const sections = locale === 'en'
+    ? [['education', 'Education'], ['research', 'Research Interests'], ['skills', 'Skills'], ['work', 'Professional Experience'], ['projects', 'Projects & Activities'], ['awards', 'Awards'], ['other', 'Additional Information']]
+    : [['education', '학력'], ['research', '연구 관심 분야'], ['skills', '기술'], ['work', '경력'], ['projects', '프로젝트 및 활동'], ['awards', '수상'], ['other', '기타 정보']];
   return <main className="info-mode"><CategoryBar locale={locale} setLocale={setLocale} reset={reset} />
     <div className="cv-layout"><aside className="cv-sidebar">
       <div><a className="brand light-brand" href="#cv-top">SK<span>°</span></a><p>INDEX</p></div>
-      <nav>{[['education', 'Education'], ['research', 'Research Interests'], ['skills', 'Skills'], ['work', 'Work Experience'], ['projects', 'Projects & Activities'], ['awards', 'Awards'], ['other', 'Other Information']].map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
+      <nav>{sections.map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
       <div className="cv-side-bottom"><span>© 2026 SEOKYOUNG KIM.</span></div>
     </aside>
     <article className="cv-document" id="cv-top">
-      <header className="cv-hero source-hero"><p>{t.profile} / 2026</p><h1>김서경<br />SeoKyoung Kim</h1><div><strong>E-mail : sk0829@hanyang.ac.kr</strong><span>Github : https://github.com/tjrud</span></div></header>
+      <header className="cv-hero source-hero"><p>{t.profile} / 2026</p><h1>{locale === 'en' ? <>SeoKyoung<br />Kim</> : <>김서경<br />SeoKyoung Kim</>}</h1><div><strong>Email: sk0829@hanyang.ac.kr</strong><span>GitHub: https://github.com/tjrud</span></div></header>
 
-      <CvSection id="education" number="01" title="Education">
-        <div className="source-list">{sourceEducation.map(item => <SourceDetail key={item.title} title={item.title} meta={item.meta} />)}</div>
+      <CvSection id="education" number="01" title={sections[0][1]}>
+        <div className="source-list">{sourceEducation.map(item => <SourceDetail key={item.title} title={text(item.title)} meta={text(item.meta)} />)}</div>
       </CvSection>
 
-      <CvSection id="research" number="02" title="Research Interests">
-        <div className="source-list">{sourceResearch.map(item => <SourceDetail key={item.title} title={item.title} bullets={item.bullets} />)}</div>
+      <CvSection id="research" number="02" title={sections[1][1]}>
+        <div className="source-list">{sourceResearch.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={item.bullets.map(text)} />)}</div>
       </CvSection>
 
-      <CvSection id="skills" number="03" title="Skills">
-        <div className="skill-table">{sourceSkills.map(([group, list]) => <div key={group}><strong>[ {group} ]</strong><span>{list}</span></div>)}</div>
+      <CvSection id="skills" number="03" title={sections[2][1]}>
+        <div className="skill-table">{sourceSkills.map(([group, list]) => <div key={group}><strong>[ {text(group)} ]</strong><span>{text(list)}</span></div>)}</div>
       </CvSection>
 
-      <CvSection id="work" number="04" title="Work Experience">
-        <div className="source-list">{sourceWork.map(item => <SourceDetail key={item.title} title={item.title} meta={item.meta} bullets={item.bullets} />)}</div>
+      <CvSection id="work" number="04" title={sections[3][1]}>
+        <div className="source-list">{sourceWork.map(item => <SourceDetail key={item.title} title={text(item.title)} meta={text(item.meta)} bullets={item.bullets.map(text)} />)}</div>
       </CvSection>
 
-      <CvSection id="projects" number="05" title="Projects & Activities">
-        <div className="source-list">{sourceProjects.map(item => <SourceDetail key={item.title} title={item.title} bullets={item.bullets} href={item.href} />)}</div>
+      <CvSection id="projects" number="05" title={sections[4][1]}>
+        <div className="source-list">{sourceProjects.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={item.bullets.map(text)} href={item.href} />)}</div>
       </CvSection>
 
-      <CvSection id="awards" number="06" title="Awards">
-        <div className="source-list award-source-list">{sourceAwards.map(item => <SourceDetail key={item.title} title={item.title} bullets={[item.detail]} />)}</div>
+      <CvSection id="awards" number="06" title={sections[5][1]}>
+        <div className="source-list award-source-list">{sourceAwards.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={[text(item.detail)]} />)}</div>
       </CvSection>
 
-      <CvSection id="other" number="07" title="Other Information">
+      <CvSection id="other" number="07" title={sections[6][1]}>
         <div className="source-list other-source-list">
-          <SourceDetail title="Language Skills" bullets={['TOEIC 935 | YBM 2024.12']} />
-          <SourceDetail title="Extracurricular Work Experience" bullets={['서울랜드 - 어트랙션, 2018.01 ~ 2018.05', 'Snowy Village - Manager, 2018.06 ~ 2019.06', 'K - Pop Karaoke - Bartender, 2019.07 ~ 2020.03', '국군화생방방호사령부 제 24특임대대(화생방특수임무단), 2021.03 ~ 2022.12']} />
-          <SourceDetail title="Extracurricular Awards" bullets={sourceOtherAwards} />
-          <SourceDetail title="Extracurricular Activities" bullets={sourceOtherActivities} />
+          <SourceDetail title={text('Language Skills')} bullets={['TOEIC 935 | YBM | Dec 2024']} />
+          <SourceDetail title={text('Extracurricular Work Experience')} bullets={['서울랜드 - 어트랙션, 2018.01 ~ 2018.05', 'Snowy Village - Manager, 2018.06 ~ 2019.06', 'K - Pop Karaoke - Bartender, 2019.07 ~ 2020.03', '국군화생방방호사령부 제 24특임대대(화생방특수임무단), 2021.03 ~ 2022.12'].map(text)} />
+          <SourceDetail title={text('Extracurricular Awards')} bullets={sourceOtherAwards.map(text)} />
+          <SourceDetail title={text('Extracurricular Activities')} bullets={sourceOtherActivities.map(text)} />
         </div>
       </CvSection>
 
-      <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">Github : https://github.com/tjrud ↗</a></div></footer>
+      <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
     </article></div>
   </main>;
 }
