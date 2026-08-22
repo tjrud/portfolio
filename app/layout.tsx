@@ -15,17 +15,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://seokyoung-kim-portfolio.vercel.app'),
   title: 'SeoKyoung Kim — AI Portfolio',
-  description: 'Portfolio of SeoKyoung Kim, an AI undergraduate at Hanyang University ERICA.',
+  description: 'Explore SeoKyoung Kim’s AI portfolio as a focused CV or an interactive experience.',
   openGraph: {
     title: 'SeoKyoung Kim — AI Portfolio',
-    description: 'AI undergraduate work in autonomous driving, industrial anomaly detection, and vehicle monitoring.',
+    description: 'A focused CV and interactive portfolio covering autonomous driving, anomaly detection, and vehicle monitoring.',
     type: 'website',
     images: [{ url: '/og.png', width: 1200, height: 630, alt: 'SeoKyoung Kim — AI Portfolio' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'SeoKyoung Kim — AI Portfolio',
-    description: 'AI undergraduate work in autonomous driving, industrial anomaly detection, and vehicle monitoring.',
+    description: 'A focused CV and interactive portfolio covering autonomous driving, anomaly detection, and vehicle monitoring.',
     images: ['/og.png'],
   },
 };
