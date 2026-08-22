@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://seokyoung-kim-portfolio.vercel.app'),
   title: 'SeoKyoung Kim — AI Engineer',
   description: 'Portfolio of SeoKyoung Kim, an AI engineer working across autonomous systems, computer vision, and MLOps.',
   openGraph: {
