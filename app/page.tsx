@@ -8,10 +8,10 @@ type Localized = Record<Locale, string>;
 
 const ui = {
   en: {
-    choose: 'Choose an experience', gateTitle: <>How would you like<br />to meet <em>SeoKyoung?</em></>,
+    choose: 'Choose an experience', gateTitle: <>Meet <em>SeoKyoung Kim.</em><br />Choose your experience.</>,
     readCode: '01 / READ', readTitle: 'Information', readBody: 'A focused, content-rich CV and project archive.',
     playCode: '02 / PLAY', playTitle: 'Interactive', playBody: 'Move, click, and explore the same work differently.', enter: 'Enter ↗',
-    switchKo: '한국어로 변경', locale: 'KO', startOver: 'Choose mode', profile: 'Profile',
+    startOver: 'Choose mode', profile: 'Profile', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: 'Education', internships: 'Internships', projects: 'Projects', activities: 'Activities', awards: 'Awards', skills: 'Skills', other: 'Other background', contact: 'Contact',
     current: 'AI undergraduate at Hanyang University ERICA', expected: 'Expected Feb. 2027', completed: 'Completed Feb. 2025',
     intro: 'I study Artificial Intelligence at Hanyang University ERICA. My work includes autonomous driving, industrial anomaly detection, and vehicle monitoring.',
@@ -20,13 +20,13 @@ const ui = {
     playIntro: 'Explore the same portfolio through the subjects, projects, and roles that connect my work.', orbitHint: 'Choose a coordinate', selectedSignal: 'Selected signal',
     selectedProjects: 'Project signals', tiltHint: 'Move across the cards', playFacts: 'A few fixed points',
     facts: ['3 AI internships', '2 engineering degrees', '4 selected awards'],
-    footer: 'SeoKyoung Kim · AI Portfolio · 2026',
+    footer: 'SeoKyoung Kim. · AI Portfolio · 2026',
   },
   ko: {
     choose: '경험할 방식을 선택하세요', gateTitle: <>김서경을 어떤 방식으로<br /><em>알아보고 싶나요?</em></>,
     readCode: '01 / 읽기', readTitle: '정보', readBody: '이력과 프로젝트를 차분하고 촘촘하게 읽는 버전입니다.',
     playCode: '02 / 탐색', playTitle: '인터랙티브', playBody: '움직이고 누르며 같은 작업을 다르게 탐색하는 버전입니다.', enter: '들어가기 ↗',
-    switchKo: 'Switch to English', locale: 'EN', startOver: '모드 선택', profile: '프로필',
+    startOver: '모드 선택', profile: '프로필', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: '학력', internships: '인턴십', projects: '프로젝트', activities: '활동', awards: '수상', skills: '기술', other: '다른 경험', contact: '연락처',
     current: '한양대학교 ERICA 인공지능학과 학부생', expected: '2027년 2월 졸업 예정', completed: '2025년 2월 졸업',
     intro: '한양대학교 ERICA에서 인공지능을 공부하고 있습니다. 자율주행, 산업 이상 탐지, 차량 모니터링 작업을 해왔습니다.',
@@ -81,14 +81,26 @@ const playTopics: Array<{ key: string; label: Localized; code: string; title: Lo
   { key: 'people', code: '04', label: { en: 'PEOPLE', ko: '사람' }, title: { en: 'Learning by helping others learn', ko: '다른 사람의 배움을 도우며 배우기' }, body: { en: 'I have mentored RC teams, organized a competition, supported manufacturing AI training, and reviewed neuroscience papers with a student committee.', ko: 'RC 팀 멘토링, 대회 운영, 제조업 AI 교육 지원, 학생 학술위원회 논문 검토를 경험했습니다.' } },
 ];
 
-function LocaleButton({ locale, setLocale, inverse = false }: { locale: Locale; setLocale: (locale: Locale) => void; inverse?: boolean }) {
-  return <button className={`locale-button${inverse ? ' inverse' : ''}`} type="button" aria-label={ui[locale].switchKo} onClick={() => setLocale(locale === 'en' ? 'ko' : 'en')}>{ui[locale].locale}</button>;
+function LocaleSwitcher({ locale, setLocale, inverse = false }: { locale: Locale; setLocale: (locale: Locale) => void; inverse?: boolean }) {
+  const t = ui[locale];
+  return <div className={`locale-switcher${inverse ? ' inverse' : ''}`} aria-label="Language">
+    <button className={locale === 'en' ? 'active' : ''} type="button" aria-label={t.switchEnglish} aria-pressed={locale === 'en'} onClick={() => setLocale('en')}><span aria-hidden="true">🇺🇸</span><small>{t.eng}</small></button>
+    <button className={locale === 'ko' ? 'active' : ''} type="button" aria-label={t.switchKorean} aria-pressed={locale === 'ko'} onClick={() => setLocale('ko')}><span aria-hidden="true">🇰🇷</span><small>{t.kor}</small></button>
+  </div>;
+}
+
+function CategoryBar({ locale, setLocale, reset, inverse = false }: { locale: Locale; setLocale: (locale: Locale) => void; reset: () => void; inverse?: boolean }) {
+  return <header className={`category-bar${inverse ? ' inverse' : ''}`}>
+    <button className="home-button" type="button" onClick={reset}>HOME</button>
+    <strong>SeoKyoung Kim.</strong>
+    <LocaleSwitcher locale={locale} setLocale={setLocale} inverse={inverse} />
+  </header>;
 }
 
 function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (locale: Locale) => void; choose: (mode: Exclude<Mode, null>) => void }) {
   const t = ui[locale];
   return <main className="mode-gate">
-    <div className="mode-gate-top"><a className="brand" href="#">SK<span>°</span></a><div><span>PORTFOLIO · 2026</span><LocaleButton locale={locale} setLocale={setLocale} /></div></div>
+    <div className="mode-gate-top"><a className="brand" href="#">SK<span>°</span></a><div><span>PORTFOLIO · 2026</span><LocaleSwitcher locale={locale} setLocale={setLocale} /></div></div>
     <div className="mode-gate-copy"><p>{t.choose}</p><h1>{t.gateTitle}</h1></div>
     <div className="mode-options">
       <button className="mode-option mode-option-info" onClick={() => choose('info')}>
@@ -108,14 +120,14 @@ function CvSection({ id, number, title, children }: { id: string; number: string
 function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (locale: Locale) => void; reset: () => void }) {
   const t = ui[locale];
   const localize = (value: Localized) => value[locale];
-  return <main className="cv-layout">
-    <aside className="cv-sidebar">
+  return <main className="info-mode"><CategoryBar locale={locale} setLocale={setLocale} reset={reset} />
+    <div className="cv-layout"><aside className="cv-sidebar">
       <div><a className="brand light-brand" href="#cv-top">SK<span>°</span></a><p>CURRICULUM<br />VITAE + WORK</p></div>
       <nav>{[['education', t.education], ['internships', t.internships], ['projects', t.projects], ['activities', t.activities], ['awards', t.awards], ['skills', t.skills]].map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
-      <div className="cv-side-bottom"><button onClick={reset}>← {t.startOver}</button><LocaleButton locale={locale} setLocale={setLocale} inverse /><span>UPDATED AUG. 2026<br />© SEO KYOUNG KIM</span></div>
+      <div className="cv-side-bottom"><span>UPDATED AUG. 2026<br />© SEOKYOUNG KIM.</span></div>
     </aside>
     <article className="cv-document" id="cv-top">
-      <header className="cv-hero"><p>{t.profile} / 2026</p><h1>SeoKyoung<br />Kim</h1><div><strong>{t.current}</strong><span>{t.intro}</span></div></header>
+      <header className="cv-hero"><p>{t.profile} / 2026</p><h1>SeoKyoung<br />Kim.</h1><div><strong>{t.current}</strong><span>{t.intro}</span></div></header>
 
       <CvSection id="education" number="01" title={t.education}>
         {education.map(item => <article className="cv-entry" key={item.date}><p className="cv-date">{item.date}</p><div><h3>{localize(item.degree)}</h3><strong>{item.school}</strong><p>{localize(item.status)}</p></div></article>)}
@@ -146,7 +158,7 @@ function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
       </CvSection>
 
       <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">{t.source}</a></div></footer>
-    </article>
+    </article></div>
   </main>;
 }
 
@@ -176,8 +188,8 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const topic = playTopics[activeTopic];
 
   return <main className="play-mode" onPointerMove={pointer}>
-    <header className="play-nav"><a className="brand light-brand" href="#play-top">SK<span>°</span></a><div><button onClick={reset}>← {t.startOver}</button><LocaleButton locale={locale} setLocale={setLocale} inverse /></div></header>
-    <section className="play-hero" id="play-top"><div className="play-heading"><p>{t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
+    <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
+    <section className="play-hero" id="play-top"><div className="play-heading"><p>SEOKYOUNG KIM. · {t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
       <div className="constellation">
         <div className="orbit-ring ring-one" /><div className="orbit-ring ring-two" />
         {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}`} key={item.key} onClick={() => setActiveTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
