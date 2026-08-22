@@ -14,18 +14,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://seokyoung-kim-portfolio.vercel.app'),
-  title: 'SeoKyoung Kim — AI Engineer',
-  description: 'Portfolio of SeoKyoung Kim, an AI engineer working across autonomous systems, computer vision, and MLOps.',
+  title: 'SeoKyoung Kim — AI Portfolio',
+  description: 'Portfolio of SeoKyoung Kim, an AI undergraduate at Hanyang University ERICA.',
   openGraph: {
-    title: 'SeoKyoung Kim — AI Engineer',
-    description: 'Autonomous systems, computer vision, and production AI for the physical world.',
+    title: 'SeoKyoung Kim — AI Portfolio',
+    description: 'AI undergraduate work in autonomous driving, industrial anomaly detection, and vehicle monitoring.',
     type: 'website',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'SeoKyoung Kim — AI Engineer' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'SeoKyoung Kim — AI Portfolio' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SeoKyoung Kim — AI Engineer',
-    description: 'Autonomous systems, computer vision, and production AI for the physical world.',
+    title: 'SeoKyoung Kim — AI Portfolio',
+    description: 'AI undergraduate work in autonomous driving, industrial anomaly detection, and vehicle monitoring.',
     images: ['/og.png'],
   },
 };
