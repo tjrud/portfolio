@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 
 type Locale = 'en' | 'ko';
 type Mode = 'info' | 'play' | null;
 type Localized = Record<Locale, string>;
+type DetailLevel = 0 | 1 | 2;
 
 const ui = {
   en: {
@@ -250,6 +251,28 @@ const playTopics: Array<{ key: string; label: Localized; code: string; title: Lo
   { key: 'people', code: '04', label: { en: 'PEOPLE', ko: '사람' }, title: { en: 'Learning by helping others learn', ko: '다른 사람의 배움을 도우며 배우기' }, body: { en: 'I have mentored RC teams, organized a competition, supported manufacturing AI training, and reviewed neuroscience papers with a student committee.', ko: 'RC 팀 멘토링, 대회 운영, 제조업 AI 교육 지원, 학생 학술위원회 논문 검토를 경험했습니다.' } },
 ];
 
+const playTopicDetails: Localized[] = [
+  { en: 'Visual inspection · medical imaging · YOLO-based vehicle detection', ko: '비전 검사 · 의료 영상 · YOLO 기반 차량 탐지' },
+  { en: 'ROS2 · YOLOv8 · ONNX · lane-change verification', ko: 'ROS2 · YOLOv8 · ONNX · 차선 변경 검증' },
+  { en: 'Preprocessing · labeling · training · deployment · monitoring', ko: '전처리 · 라벨링 · 학습 · 배포 · 모니터링' },
+  { en: 'Mentoring · event operations · teaching assistance · paper review', ko: '멘토링 · 대회 운영 · 교육 지원 · 논문 검토' },
+];
+
+const playProjectDetails: Localized[][] = [
+  [
+    { en: 'Automated image preprocessing and labeling', ko: '이미지 전처리와 라벨링 자동화' },
+    { en: 'Training, deployment, and visualization in one MLOps application', ko: '학습·배포·시각화를 하나의 MLOps 애플리케이션으로 연결' },
+  ],
+  [
+    { en: 'Lane perception and YOLOv8 vehicle avoidance in ROS2', ko: 'ROS2 기반 차선 인식과 YOLOv8 차량 회피' },
+    { en: 'Lane-change completion verification and ONNX inference', ko: '차선 변경 완료 검증과 ONNX 추론' },
+  ],
+  [
+    { en: 'YOLO detection with BoT-SORT and ReID tracking', ko: 'YOLO 탐지와 BoT-SORT·ReID 추적' },
+    { en: 'Directional counting and automated CSV visualization', ko: '방향별 계수와 CSV 자동 시각화' },
+  ],
+];
+
 function LocaleSwitcher({ locale, setLocale, inverse = false }: { locale: Locale; setLocale: (locale: Locale) => void; inverse?: boolean }) {
   const t = ui[locale];
   return <div className={`locale-switcher${inverse ? ' inverse' : ''}`} aria-label="Language">
@@ -266,7 +289,7 @@ function CategoryBar({ locale, setLocale, reset, inverse = false }: { locale: Lo
   </header>;
 }
 
-function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (locale: Locale) => void; choose: (mode: Exclude<Mode, null>) => void }) {
+function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (locale: Locale) => void; choose: (mode: Exclude<Mode, null>, origin?: { x: number; y: number }) => void }) {
   const t = ui[locale];
   return <main className="mode-gate">
     <div className="mode-gate-top"><LocaleSwitcher locale={locale} setLocale={setLocale} /></div>
@@ -275,7 +298,10 @@ function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (l
       <button className="mode-option mode-option-info" onClick={() => choose('info')}>
         <span>{t.readCode}</span><span className="option-preview">Aa</span><strong>{t.readTitle}</strong><p>{t.readBody}</p><b>{t.enter}</b>
       </button>
-      <button className="mode-option mode-option-play" onClick={() => choose('play')}>
+      <button className="mode-option mode-option-play" onClick={event => {
+        const rect = event.currentTarget.querySelector('.option-orbit')?.getBoundingClientRect();
+        choose('play', rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined);
+      }}>
         <span>{t.playCode}</span><span className="option-orbit"><i /><i /><i /></span><strong>{t.playTitle}</strong><p>{t.playBody}</p><b>{t.enter}</b>
       </button>
     </div>
@@ -367,16 +393,19 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const localize = (value: Localized) => value[locale];
   const [activeTopic, setActiveTopic] = useState(0);
   const [visitedTopics, setVisitedTopics] = useState<number[]>([0]);
-  const [unlockValue, setUnlockValue] = useState(0);
+  const [unlockValue, setUnlockValue] = useState(50);
+  const [detailLevel, setDetailLevel] = useState<DetailLevel>(1);
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const micro = locale === 'en' ? {
-    lockKicker: 'INTERACTIVE MODE / 02', lockTitle: <>Pull the signal.<br /><em>Unlock my world.</em></>,
-    drag: 'DRAG TO UNLOCK ME', click: 'or tap to enter', ready: 'SIGNAL READY',
+    lockKicker: 'INTERACTIVE MODE / 02', lockTitle: <>How much do you want<br />to know <em>about me?</em></>,
+    drag: 'DRAG TO CHOOSE, THEN RELEASE', ready: 'SET THE DEPTH',
+    levels: ['A GLIMPSE', 'SELECTED', 'FULL STORY'], depth: 'INFORMATION',
     discovered: 'SIGNALS FOUND', random: 'RANDOM SIGNAL', cursor: 'POINTER REACTIVE',
   } : {
-    lockKicker: '인터랙티브 모드 / 02', lockTitle: <>신호를 당겨<br /><em>세계로 들어오세요.</em></>,
-    drag: '밀어서 잠금 해제', click: '또는 눌러서 입장', ready: '신호 준비 완료',
+    lockKicker: '인터랙티브 모드 / 02', lockTitle: <>저에 대해<br /><em>얼마나 알고 싶나요?</em></>,
+    drag: '드래그해 선택한 뒤 놓아주세요', ready: '정보의 깊이를 선택하세요',
+    levels: ['짧게 보기', '골라 보기', '전부 보기'], depth: '정보량',
     discovered: '발견한 신호', random: '랜덤 신호', cursor: '포인터 반응 중',
   };
 
@@ -398,7 +427,11 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     const next = (activeTopic + 1 + Math.floor(Math.random() * (playTopics.length - 1))) % playTopics.length;
     selectTopic(next);
   };
-  const unlock = () => { setUnlockValue(100); window.setTimeout(() => setUnlocked(true), 180); };
+  const setDepth = (value: number) => {
+    setUnlockValue(value);
+    setDetailLevel(value < 34 ? 0 : value < 67 ? 1 : 2);
+  };
+  const unlock = () => window.setTimeout(() => setUnlocked(true), 180);
   const pointer = (event: ReactPointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty('--mx', `${event.clientX - rect.left}px`);
@@ -410,40 +443,37 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="unlock-stage">
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1><span>{micro.ready}</span></div>
-      <div className={`unlock-control${unlockValue >= 94 ? ' complete' : ''}`}>
+      <div className="unlock-control">
         <div className="unlock-track" aria-hidden="true"><i style={{ width: `${unlockValue}%` }} /></div>
         <input type="range" min="0" max="100" value={unlockValue} aria-label={micro.drag}
-          onChange={event => {
-            const value = event.currentTarget.valueAsNumber;
-            setUnlockValue(value);
-            if (value >= 94) unlock();
-          }} />
-        <div className="unlock-label"><strong>{micro.drag}</strong><b>{String(unlockValue).padStart(2, '0')}%</b></div>
+          onInput={event => setDepth(event.currentTarget.valueAsNumber)}
+          onPointerUp={unlock} onKeyUp={unlock} />
+        <div className="unlock-label"><strong>{micro.drag}</strong><b>{micro.levels[detailLevel]}</b></div>
+        <div className="unlock-scale" aria-hidden="true">{micro.levels.map((label, index) => <span className={detailLevel === index ? 'active' : ''} key={label}>{label}</span>)}</div>
       </div>
-      <button className="unlock-skip" type="button" onClick={unlock}>{micro.click} ↗</button>
       <div className="unlock-orbits" aria-hidden="true"><i /><i /><i /></div>
     </section>
   </main>;
 
-  return <main className="play-mode unlocked-view" onPointerMove={pointer}>
+  return <main className={`play-mode unlocked-view detail-${detailLevel}`} onPointerMove={pointer}>
     <div className="scroll-progress" aria-hidden="true"><i style={{ width: `${scrollProgress}%` }} /></div>
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="play-hero" id="play-top"><div className="play-heading"><p>{t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
       <div className="constellation">
         <div className="orbit-ring ring-one" /><div className="orbit-ring ring-two" />
         {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}${visitedTopics.includes(index) ? ' visited' : ''}`} key={item.key} onClick={() => selectTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
-        <div className="signal-card" aria-live="polite"><p>{t.selectedSignal} / {topic.code}</p><h2>{localize(topic.title)}</h2><span>{localize(topic.body)}</span></div>
+        <div className="signal-card" aria-live="polite"><p>{t.selectedSignal} / {topic.code}</p><h2>{localize(topic.title)}</h2>{detailLevel >= 1 && <span>{localize(topic.body)}</span>}{detailLevel === 2 && <small>{localize(playTopicDetails[activeTopic])}</small>}</div>
       </div>
-      <div className="play-console"><span><i />{micro.cursor}</span><strong>{micro.discovered} {String(visitedTopics.length).padStart(2, '0')} / 04</strong><button type="button" onClick={randomTopic}>{micro.random} ↗</button></div>
+      <div className="play-console"><span><i />{micro.cursor}</span><label><b>{micro.depth}</b><input type="range" min="0" max="2" step="1" value={detailLevel} onInput={event => setDetailLevel(Number(event.currentTarget.value) as DetailLevel)} /><em>{micro.levels[detailLevel]}</em></label><strong>{micro.discovered} {String(visitedTopics.length).padStart(2, '0')} / 04</strong><button type="button" onClick={randomTopic}>{micro.random} ↗</button></div>
     </section>
 
     <div className="skill-marquee" aria-hidden="true"><div>{[...skillGroups, ...skillGroups].map(([group], i) => <span key={`${group}-${i}`}>{group} <b>✦</b></span>)}</div></div>
 
     <section className="play-projects"><header><p>{t.selectedProjects}</p><span>{t.tiltHint}</span></header><div className="play-project-grid">
-      {projects.map((project, index) => <TiltCard className={`play-project project-${index + 1}`} key={project.number}><div><span>{project.number}</span><span>{project.date}</span></div><h2>{localize(project.title)}</h2><p>{localize(project.detail)}</p><footer><div>{project.tags.map(tag => <i key={tag}>{tag}</i>)}</div>{project.href && <a href={project.href} target="_blank" rel="noreferrer">↗</a>}</footer></TiltCard>)}
+      {projects.map((project, index) => <TiltCard className={`play-project project-${index + 1}`} key={project.number}><div><span>{project.number}</span><span>{project.date}</span></div><h2>{localize(project.title)}</h2>{detailLevel >= 1 && <p>{localize(project.detail)}</p>}{detailLevel === 2 && <ul>{playProjectDetails[index].map(item => <li key={item.en}>{localize(item)}</li>)}</ul>}<footer><div>{project.tags.map(tag => <i key={tag}>{tag}</i>)}</div>{project.href && <a href={project.href} target="_blank" rel="noreferrer">↗</a>}</footer></TiltCard>)}
     </div></section>
 
-    <section className="play-facts"><p>{t.playFacts}</p><div>{t.facts.map((fact, i) => <TiltCard key={fact}><span>0{i + 1}</span><h3>{fact}</h3></TiltCard>)}</div></section>
+    {detailLevel >= 1 && <section className="play-facts"><p>{t.playFacts}</p><div>{t.facts.map((fact, i) => <TiltCard key={fact}><span>0{i + 1}</span><h3>{fact}</h3></TiltCard>)}</div></section>}
 
     <footer className="play-footer"><h2>sk0829<br />@hanyang.ac.kr</h2><div><span>{t.footer}</span><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="#play-top">TOP ↑</a></div></footer>
   </main>;
@@ -453,8 +483,10 @@ export default function Home() {
   const [mode, setMode] = useState<Mode>(null);
   const [locale, setLocale] = useState<Locale>('en');
   const [transitionTarget, setTransitionTarget] = useState<Mode>(null);
+  const [transitionOrigin, setTransitionOrigin] = useState({ x: 0, y: 0 });
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
-  const chooseMode = (next: Exclude<Mode, null>) => {
+  const chooseMode = (next: Exclude<Mode, null>, origin?: { x: number; y: number }) => {
+    if (origin) setTransitionOrigin(origin);
     setTransitionTarget(next);
     window.setTimeout(() => setMode(next), next === 'play' ? 620 : 360);
     window.setTimeout(() => setTransitionTarget(null), next === 'play' ? 980 : 620);
@@ -465,5 +497,6 @@ export default function Home() {
     : mode === 'play'
       ? <PlayMode locale={locale} setLocale={setLocale} reset={reset} />
       : <ModeGate locale={locale} setLocale={setLocale} choose={chooseMode} />;
-  return <>{content}{transitionTarget && <div className={`mode-transition transition-${transitionTarget}`} aria-hidden="true"><div><i /><i /><i /></div><p>{transitionTarget === 'play' ? (locale === 'en' ? 'ENTERING INTERACTIVE' : '인터랙티브 모드로 이동') : (locale === 'en' ? 'OPENING INFORMATION' : '정보 페이지 열기')}</p></div>}</>;
+  const transitionStyle = { '--transition-x': `${transitionOrigin.x}px`, '--transition-y': `${transitionOrigin.y}px` } as CSSProperties;
+  return <>{content}{transitionTarget && <div className={`mode-transition transition-${transitionTarget}`} style={transitionStyle} aria-hidden="true"><div><i /><i /><i /></div><p>{transitionTarget === 'play' ? (locale === 'en' ? 'ENTERING INTERACTIVE' : '인터랙티브 모드로 이동') : (locale === 'en' ? 'OPENING INFORMATION' : '정보 페이지 열기')}</p></div>}</>;
 }
