@@ -8,32 +8,32 @@ type Localized = Record<Locale, string>;
 
 const ui = {
   en: {
-    choose: 'Choose an experience', gateTitle: <>Meet <em>SeoKyoung Kim.</em><br />Choose your experience.</>,
-    readCode: '01 / READ', readTitle: 'Information', readBody: 'A focused, content-rich CV and project archive.',
-    playCode: '02 / PLAY', playTitle: 'Interactive', playBody: 'Move, click, and explore the same work differently.', enter: 'Enter ↗',
+    choose: 'Portfolio · 2026', gateTitle: <>Hi, I’m<br /><em>SeoKyoung Kim.</em></>,
+    readCode: '01', readTitle: 'Information', readBody: 'CV, projects, and experience.',
+    playCode: '02', playTitle: 'Interactive', playBody: 'Move, click, and explore.', enter: 'Open ↗',
     startOver: 'Choose mode', profile: 'Profile', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: 'Education', internships: 'Internships', projects: 'Projects', activities: 'Activities', awards: 'Awards', skills: 'Skills', other: 'Other background', contact: 'Contact',
     current: 'AI undergraduate at Hanyang University ERICA', expected: 'Expected Feb. 2027', completed: 'Completed Feb. 2025',
     intro: 'I study Artificial Intelligence at Hanyang University ERICA. My work includes autonomous driving, industrial anomaly detection, and vehicle monitoring.',
     infoHint: 'A factual record of study, work, and things I have built.', live: 'Live site ↗', source: 'GitHub ↗',
-    playKicker: 'MOVE · CLICK · DISCOVER', playTitleMain: <>One person,<br /><em>many coordinates.</em></>,
-    playIntro: 'Explore the same portfolio through the subjects, projects, and roles that connect my work.', orbitHint: 'Choose a coordinate', selectedSignal: 'Selected signal',
-    selectedProjects: 'Project signals', tiltHint: 'Move across the cards', playFacts: 'A few fixed points',
+    playKicker: 'EXPLORE', playTitleMain: <>Work across<br /><em>AI and motion.</em></>,
+    playIntro: 'Projects, interests, and roles—connected.', orbitHint: 'Choose a coordinate', selectedSignal: 'Focus',
+    selectedProjects: 'Projects', tiltHint: 'Move across the cards', playFacts: 'At a glance',
     facts: ['3 AI internships', '2 engineering degrees', '4 selected awards'],
     footer: 'SeoKyoung Kim. · AI Portfolio · 2026',
   },
   ko: {
-    choose: '경험할 방식을 선택하세요', gateTitle: <>김서경을 어떤 방식으로<br /><em>알아보고 싶나요?</em></>,
-    readCode: '01 / 읽기', readTitle: '정보', readBody: '이력과 프로젝트를 차분하고 촘촘하게 읽는 버전입니다.',
-    playCode: '02 / 탐색', playTitle: '인터랙티브', playBody: '움직이고 누르며 같은 작업을 다르게 탐색하는 버전입니다.', enter: '들어가기 ↗',
+    choose: '포트폴리오 · 2026', gateTitle: <>안녕하세요,<br /><em>김서경입니다.</em></>,
+    readCode: '01', readTitle: '정보', readBody: '이력, 프로젝트, 경험.',
+    playCode: '02', playTitle: '인터랙티브', playBody: '움직이고 누르며 탐색합니다.', enter: '열기 ↗',
     startOver: '모드 선택', profile: '프로필', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: '학력', internships: '인턴십', projects: '프로젝트', activities: '활동', awards: '수상', skills: '기술', other: '다른 경험', contact: '연락처',
     current: '한양대학교 ERICA 인공지능학과 학부생', expected: '2027년 2월 졸업 예정', completed: '2025년 2월 졸업',
     intro: '한양대학교 ERICA에서 인공지능을 공부하고 있습니다. 자율주행, 산업 이상 탐지, 차량 모니터링 작업을 해왔습니다.',
     infoHint: '공부한 것, 일한 곳, 직접 만든 것을 사실대로 정리했습니다.', live: '사이트 보기 ↗', source: '깃허브 ↗',
-    playKicker: '움직이고 · 누르고 · 발견하기', playTitleMain: <>한 사람을 이루는<br /><em>여러 개의 좌표.</em></>,
-    playIntro: '관심 분야, 프로젝트, 활동 사이의 연결을 따라 같은 포트폴리오를 새롭게 탐색해보세요.', orbitHint: '좌표를 선택하세요', selectedSignal: '선택한 신호',
-    selectedProjects: '프로젝트 신호', tiltHint: '카드 위에서 움직여보세요', playFacts: '변하지 않는 몇 가지',
+    playKicker: '탐색', playTitleMain: <>AI와 움직임을<br /><em>연결한 작업.</em></>,
+    playIntro: '프로젝트, 관심 분야, 활동의 연결.', orbitHint: '좌표를 선택하세요', selectedSignal: '선택',
+    selectedProjects: '프로젝트', tiltHint: '카드 위에서 움직여보세요', playFacts: '한눈에 보기',
     facts: ['AI 인턴십 3회', '공학 학사 과정 2개', '주요 수상 4건'],
     footer: '김서경 · AI 포트폴리오 · 2026',
   },
@@ -100,11 +100,11 @@ function CategoryBar({ locale, setLocale, reset, inverse = false }: { locale: Lo
 function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (locale: Locale) => void; choose: (mode: Exclude<Mode, null>) => void }) {
   const t = ui[locale];
   return <main className="mode-gate">
-    <div className="mode-gate-top"><a className="brand" href="#">SK<span>°</span></a><div><span>PORTFOLIO · 2026</span><LocaleSwitcher locale={locale} setLocale={setLocale} /></div></div>
+    <div className="mode-gate-top"><a className="brand" href="#">SK<span>°</span></a><LocaleSwitcher locale={locale} setLocale={setLocale} /></div>
     <div className="mode-gate-copy"><p>{t.choose}</p><h1>{t.gateTitle}</h1></div>
     <div className="mode-options">
       <button className="mode-option mode-option-info" onClick={() => choose('info')}>
-        <span>{t.readCode}</span><span className="option-preview">Aa<br /><i>CV / ARCHIVE</i></span><strong>{t.readTitle}</strong><p>{t.readBody}</p><b>{t.enter}</b>
+        <span>{t.readCode}</span><span className="option-preview">Aa</span><strong>{t.readTitle}</strong><p>{t.readBody}</p><b>{t.enter}</b>
       </button>
       <button className="mode-option mode-option-play" onClick={() => choose('play')}>
         <span>{t.playCode}</span><span className="option-orbit"><i /><i /><i /></span><strong>{t.playTitle}</strong><p>{t.playBody}</p><b>{t.enter}</b>
@@ -122,9 +122,9 @@ function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const localize = (value: Localized) => value[locale];
   return <main className="info-mode"><CategoryBar locale={locale} setLocale={setLocale} reset={reset} />
     <div className="cv-layout"><aside className="cv-sidebar">
-      <div><a className="brand light-brand" href="#cv-top">SK<span>°</span></a><p>CURRICULUM<br />VITAE + WORK</p></div>
+      <div><a className="brand light-brand" href="#cv-top">SK<span>°</span></a><p>INDEX</p></div>
       <nav>{[['education', t.education], ['internships', t.internships], ['projects', t.projects], ['activities', t.activities], ['awards', t.awards], ['skills', t.skills]].map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
-      <div className="cv-side-bottom"><span>UPDATED AUG. 2026<br />© SEOKYOUNG KIM.</span></div>
+      <div className="cv-side-bottom"><span>© 2026 SEOKYOUNG KIM.</span></div>
     </aside>
     <article className="cv-document" id="cv-top">
       <header className="cv-hero"><p>{t.profile} / 2026</p><h1>SeoKyoung<br />Kim.</h1><div><strong>{t.current}</strong><span>{t.intro}</span></div></header>
@@ -189,7 +189,7 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
 
   return <main className="play-mode" onPointerMove={pointer}>
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
-    <section className="play-hero" id="play-top"><div className="play-heading"><p>SEOKYOUNG KIM. · {t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
+    <section className="play-hero" id="play-top"><div className="play-heading"><p>{t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
       <div className="constellation">
         <div className="orbit-ring ring-one" /><div className="orbit-ring ring-two" />
         {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}`} key={item.key} onClick={() => setActiveTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
