@@ -366,6 +366,39 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const t = ui[locale];
   const localize = (value: Localized) => value[locale];
   const [activeTopic, setActiveTopic] = useState(0);
+  const [visitedTopics, setVisitedTopics] = useState<number[]>([0]);
+  const [unlockValue, setUnlockValue] = useState(0);
+  const [unlocked, setUnlocked] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const micro = locale === 'en' ? {
+    lockKicker: 'INTERACTIVE MODE / 02', lockTitle: <>Pull the signal.<br /><em>Unlock my world.</em></>,
+    drag: 'DRAG TO UNLOCK ME', click: 'or tap to enter', ready: 'SIGNAL READY',
+    discovered: 'SIGNALS FOUND', random: 'RANDOM SIGNAL', cursor: 'POINTER REACTIVE',
+  } : {
+    lockKicker: '인터랙티브 모드 / 02', lockTitle: <>신호를 당겨<br /><em>세계로 들어오세요.</em></>,
+    drag: '밀어서 잠금 해제', click: '또는 눌러서 입장', ready: '신호 준비 완료',
+    discovered: '발견한 신호', random: '랜덤 신호', cursor: '포인터 반응 중',
+  };
+
+  useEffect(() => {
+    const updateProgress = () => {
+      const distance = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(distance > 0 ? Math.min(100, (window.scrollY / distance) * 100) : 0);
+    };
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    return () => window.removeEventListener('scroll', updateProgress);
+  }, [unlocked]);
+
+  const selectTopic = (index: number) => {
+    setActiveTopic(index);
+    setVisitedTopics(current => current.includes(index) ? current : [...current, index]);
+  };
+  const randomTopic = () => {
+    const next = (activeTopic + 1 + Math.floor(Math.random() * (playTopics.length - 1))) % playTopics.length;
+    selectTopic(next);
+  };
+  const unlock = () => { setUnlockValue(100); window.setTimeout(() => setUnlocked(true), 180); };
   const pointer = (event: ReactPointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty('--mx', `${event.clientX - rect.left}px`);
@@ -373,14 +406,35 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   };
   const topic = playTopics[activeTopic];
 
-  return <main className="play-mode" onPointerMove={pointer}>
+  if (!unlocked) return <main className="play-mode unlock-mode" onPointerMove={pointer}>
+    <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
+    <section className="unlock-stage">
+      <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1><span>{micro.ready}</span></div>
+      <div className={`unlock-control${unlockValue >= 94 ? ' complete' : ''}`}>
+        <div className="unlock-track" aria-hidden="true"><i style={{ width: `${unlockValue}%` }} /></div>
+        <input type="range" min="0" max="100" value={unlockValue} aria-label={micro.drag}
+          onChange={event => {
+            const value = event.currentTarget.valueAsNumber;
+            setUnlockValue(value);
+            if (value >= 94) unlock();
+          }} />
+        <div className="unlock-label"><strong>{micro.drag}</strong><b>{String(unlockValue).padStart(2, '0')}%</b></div>
+      </div>
+      <button className="unlock-skip" type="button" onClick={unlock}>{micro.click} ↗</button>
+      <div className="unlock-orbits" aria-hidden="true"><i /><i /><i /></div>
+    </section>
+  </main>;
+
+  return <main className="play-mode unlocked-view" onPointerMove={pointer}>
+    <div className="scroll-progress" aria-hidden="true"><i style={{ width: `${scrollProgress}%` }} /></div>
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="play-hero" id="play-top"><div className="play-heading"><p>{t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
       <div className="constellation">
         <div className="orbit-ring ring-one" /><div className="orbit-ring ring-two" />
-        {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}`} key={item.key} onClick={() => setActiveTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
+        {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}${visitedTopics.includes(index) ? ' visited' : ''}`} key={item.key} onClick={() => selectTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
         <div className="signal-card" aria-live="polite"><p>{t.selectedSignal} / {topic.code}</p><h2>{localize(topic.title)}</h2><span>{localize(topic.body)}</span></div>
       </div>
+      <div className="play-console"><span><i />{micro.cursor}</span><strong>{micro.discovered} {String(visitedTopics.length).padStart(2, '0')} / 04</strong><button type="button" onClick={randomTopic}>{micro.random} ↗</button></div>
     </section>
 
     <div className="skill-marquee" aria-hidden="true"><div>{[...skillGroups, ...skillGroups].map(([group], i) => <span key={`${group}-${i}`}>{group} <b>✦</b></span>)}</div></div>
@@ -398,8 +452,18 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
 export default function Home() {
   const [mode, setMode] = useState<Mode>(null);
   const [locale, setLocale] = useState<Locale>('en');
+  const [transitionTarget, setTransitionTarget] = useState<Mode>(null);
   useEffect(() => { document.documentElement.lang = locale; }, [locale]);
-  if (mode === 'info') return <InfoMode locale={locale} setLocale={setLocale} reset={() => setMode(null)} />;
-  if (mode === 'play') return <PlayMode locale={locale} setLocale={setLocale} reset={() => setMode(null)} />;
-  return <ModeGate locale={locale} setLocale={setLocale} choose={setMode} />;
+  const chooseMode = (next: Exclude<Mode, null>) => {
+    setTransitionTarget(next);
+    window.setTimeout(() => setMode(next), next === 'play' ? 620 : 360);
+    window.setTimeout(() => setTransitionTarget(null), next === 'play' ? 980 : 620);
+  };
+  const reset = () => setMode(null);
+  const content = mode === 'info'
+    ? <InfoMode locale={locale} setLocale={setLocale} reset={reset} />
+    : mode === 'play'
+      ? <PlayMode locale={locale} setLocale={setLocale} reset={reset} />
+      : <ModeGate locale={locale} setLocale={setLocale} choose={chooseMode} />;
+  return <>{content}{transitionTarget && <div className={`mode-transition transition-${transitionTarget}`} aria-hidden="true"><div><i /><i /><i /></div><p>{transitionTarget === 'play' ? (locale === 'en' ? 'ENTERING INTERACTIVE' : '인터랙티브 모드로 이동') : (locale === 'en' ? 'OPENING INFORMATION' : '정보 페이지 열기')}</p></div>}</>;
 }
