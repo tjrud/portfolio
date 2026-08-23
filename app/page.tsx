@@ -393,15 +393,15 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [boxOffset, setBoxOffset] = useState(0);
-  const boxGesture = useRef({ active: false, startY: 0, startValue: 0 });
+  const boxGesture = useRef({ active: false, startY: 0, startValue: 0, side: 1 });
   const micro = locale === 'en' ? {
     lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
-    drag: 'LIFT THE BOX, THEN RELEASE',
+    drag: 'LOWER EITHER SIDE, THEN RELEASE',
     levels: ['BRIEF', 'STANDARD', 'DETAILED'], depth: 'DETAIL',
     discovered: 'VIEWED', random: 'NEXT TOPIC', cursor: 'MOVE TO INTERACT',
   } : {
     lockKicker: '인터랙티브 / 02', lockTitle: <>얼마나 자세히<br /><em>볼까요?</em></>,
-    drag: '상자를 잡고 위로 올린 뒤 놓아주세요',
+    drag: '왼쪽이나 오른쪽을 잡고 내려보세요',
     levels: ['간단히', '기본', '자세히'], depth: '상세도',
     discovered: '확인한 주제', random: '다음 주제', cursor: '움직여 보세요',
   };
@@ -431,14 +431,16 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   };
   const unlock = () => window.setTimeout(() => setUnlocked(true), 180);
   const beginTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
-    boxGesture.current = { active: true, startY: event.clientY, startValue: unlockValue };
+    const rect = event.currentTarget.getBoundingClientRect();
+    boxGesture.current = { active: true, startY: event.clientY, startValue: unlockValue, side: event.clientX < rect.left + rect.width / 2 ? -1 : 1 };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
   const moveTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!boxGesture.current.active) return;
     const delta = event.clientY - boxGesture.current.startY;
-    setBoxOffset(Math.max(-42, Math.min(42, delta)));
-    setDepth(boxGesture.current.startValue - delta / 1.45);
+    const directedDelta = delta * boxGesture.current.side;
+    setBoxOffset(Math.max(-42, Math.min(42, directedDelta)));
+    setDepth(boxGesture.current.startValue + directedDelta / 1.45);
   };
   const endTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!boxGesture.current.active) return;
@@ -466,7 +468,7 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
       <div className="box-control">
         <div className="motion-box" role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
-          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * -.1))}deg` } as CSSProperties}
+          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * .1))}deg` } as CSSProperties}
           onPointerDown={beginTilt} onPointerMove={moveTilt} onPointerUp={endTilt} onPointerCancel={endTilt} onKeyDown={tiltWithKeyboard}>
           <div className="ball-track" aria-hidden="true"><i /></div>
           <div className="box-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
