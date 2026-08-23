@@ -209,6 +209,9 @@ p { margin: 0; }
 .play-facts .tilt-card { min-height: 180px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(9,29,56,.12); border-radius: 15px; background: rgba(255,255,255,.66); }
 .play-facts .tilt-card span { color: var(--blue); font-size: 13px; }
 .play-facts h3 { margin: 0; font-size: clamp(22px, 2.5vw, 36px); line-height: 1.05; letter-spacing: -.04em; }
+.play-full-archive { margin: 0 4vw 130px; padding: clamp(42px, 6vw, 78px) clamp(24px, 5vw, 72px) 80px; border: 1px solid rgba(9,29,56,.12); border-radius: 20px; background: rgba(255,255,255,.88); }
+.play-full-archive > header { padding-bottom: 38px; border-bottom: 1px solid var(--navy); }.play-full-archive > header p { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .12em; }.play-full-archive > header h2 { margin: 16px 0 12px; font-size: clamp(32px, 4vw, 52px); line-height: 1.05; letter-spacing: -.045em; }.play-full-archive > header span { color: #657386; font-size: 14px; line-height: 1.6; }
+.full-record-body { max-width: 1080px; }.full-record-body .cv-section { padding-top: 58px; }.full-record-body .source-detail { padding-block: 24px; }.full-record-body .source-detail h3 { font-size: 17px; }.full-record-body .source-detail li { font-size: 14px; line-height: 1.6; }.full-record-body .other-source-list .source-detail { padding-block: 28px; }
 .play-footer { padding: 90px 4vw 30px; background: #dce6f0; }
 .play-footer h2 { margin: 0; color: var(--navy); font-size: clamp(42px, 5.8vw, 78px); line-height: .96; letter-spacing: -.055em; font-weight: 620; }
 .play-footer > div { margin-top: 80px; padding-top: 18px; display: flex; gap: 26px; border-top: 1px solid rgba(9,29,56,.14); color: #5f7187; font-size: 13px; letter-spacing: .06em; }
@@ -287,6 +290,12 @@ p { margin: 0; }
   .play-projects > header span { display: none; }
   .play-facts { padding: 0 18px 90px; }
   .play-facts > div { grid-template-columns: 1fr; }
+  .play-full-archive { margin: 0 18px 85px; padding: 38px 20px 55px; border-radius: 16px; }
+  .play-full-archive > header h2 { font-size: 32px; }
+  .full-record-body .cv-section { padding-top: 45px; }
+  .full-record-body .cv-section > header { grid-template-columns: 42px 1fr; }
+  .full-record-body .cv-section > header h2 { font-size: 23px; }
+  .full-record-body .skill-table > div { grid-template-columns: 1fr; }
   .play-footer { padding-inline: 18px; }
   .play-footer h2 { font-size: clamp(34px, 9vw, 44px); line-height: 1.04; overflow-wrap: anywhere; }
   :lang(ko) .play-footer h2 { font-size: clamp(30px, 8vw, 38px); }

@@ -239,6 +239,8 @@ const verifiedEnglishTerms: Record<string, string> = {
   '한양대 ERICA RC 멘토 활동': 'Residential College Mentoring | Hanyang University ERICA',
 };
 
+const sourceText = (locale: Locale, value: string) => locale === 'en' ? (verifiedEnglishTerms[value] ?? value) : value;
+
 const playTopics: Array<{ key: string; label: Localized; code: string; title: Localized; body: Localized }> = [
   { key: 'vision', code: '01', label: { en: 'VISION', ko: '비전' }, title: { en: 'Seeing industrial and road scenes', ko: '산업 현장과 도로 장면을 보는 기술' }, body: { en: 'Surface-defect inspection, medical image preprocessing, and vehicle detection are the recurring vision problems in my work.', ko: '표면 결함 검사, 의료 영상 전처리, 차량 탐지는 제가 반복해서 다뤄온 비전 문제입니다.' } },
   { key: 'robotics', code: '02', label: { en: 'ROBOTICS', ko: '로보틱스' }, title: { en: 'Perception connected to motion', ko: '인지에서 움직임까지' }, body: { en: 'With ROS2, YOLOv8, and ONNX, I built lane perception, vehicle avoidance, and lane-change verification for an RC car.', ko: 'ROS2, YOLOv8, ONNX로 RC카의 차선 인식, 차량 회피, 차선 변경 완료 검증을 구현했습니다.' } },
@@ -316,9 +318,33 @@ function SourceDetail({ title, meta, bullets, href }: { title: string; meta?: st
   </article>;
 }
 
+function FullArchive({ locale }: { locale: Locale }) {
+  const text = (value: string) => sourceText(locale, value);
+  const labels = locale === 'en'
+    ? ['Education', 'Research Interests', 'Skills', 'Professional Experience', 'Projects & Activities', 'Awards', 'Additional Information']
+    : ['학력', '연구 관심 분야', '기술', '경력', '프로젝트 및 활동', '수상', '기타 정보'];
+  return <section className="play-full-archive">
+    <header><p>{locale === 'en' ? 'FULL RECORD' : '전체 기록'}</p><h2>{locale === 'en' ? 'Everything, in detail.' : '전체 내용을 자세히.'}</h2><span>{locale === 'en' ? 'The complete record from the Information page.' : 'Information 페이지의 전체 기록을 누락 없이 담았습니다.'}</span></header>
+    <div className="full-record-body">
+      <CvSection id="full-education" number="01" title={labels[0]}><div className="source-list">{sourceEducation.map(item => <SourceDetail key={item.title} title={text(item.title)} meta={text(item.meta)} />)}</div></CvSection>
+      <CvSection id="full-research" number="02" title={labels[1]}><div className="source-list">{sourceResearch.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={item.bullets.map(text)} />)}</div></CvSection>
+      <CvSection id="full-skills" number="03" title={labels[2]}><div className="skill-table">{sourceSkills.map(([group, list]) => <div key={group}><strong>[ {text(group)} ]</strong><span>{text(list)}</span></div>)}</div></CvSection>
+      <CvSection id="full-work" number="04" title={labels[3]}><div className="source-list">{sourceWork.map(item => <SourceDetail key={item.title} title={text(item.title)} meta={text(item.meta)} bullets={item.bullets.map(text)} />)}</div></CvSection>
+      <CvSection id="full-projects" number="05" title={labels[4]}><div className="source-list">{sourceProjects.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={item.bullets.map(text)} href={item.href} />)}</div></CvSection>
+      <CvSection id="full-awards" number="06" title={labels[5]}><div className="source-list award-source-list">{sourceAwards.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={[text(item.detail)]} />)}</div></CvSection>
+      <CvSection id="full-other" number="07" title={labels[6]}><div className="source-list other-source-list">
+        <SourceDetail title={text('Language Skills')} bullets={['TOEIC 935 | YBM | Dec 2024']} />
+        <SourceDetail title={text('Extracurricular Work Experience')} bullets={['서울랜드 - 어트랙션, 2018.01 ~ 2018.05', 'Snowy Village - Manager, 2018.06 ~ 2019.06', 'K - Pop Karaoke - Bartender, 2019.07 ~ 2020.03', '국군화생방방호사령부 제 24특임대대(화생방특수임무단), 2021.03 ~ 2022.12'].map(text)} />
+        <SourceDetail title={text('Extracurricular Awards')} bullets={sourceOtherAwards.map(text)} />
+        <SourceDetail title={text('Extracurricular Activities')} bullets={sourceOtherActivities.map(text)} />
+      </div></CvSection>
+    </div>
+  </section>;
+}
+
 function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (locale: Locale) => void; reset: () => void }) {
   const t = ui[locale];
-  const text = (value: string) => locale === 'en' ? (verifiedEnglishTerms[value] ?? value) : value;
+  const text = (value: string) => sourceText(locale, value);
   const sections = locale === 'en'
     ? [['education', 'Education'], ['research', 'Research Interests'], ['skills', 'Skills'], ['work', 'Professional Experience'], ['projects', 'Projects & Activities'], ['awards', 'Awards'], ['other', 'Additional Information']]
     : [['education', '학력'], ['research', '연구 관심 분야'], ['skills', '기술'], ['work', '경력'], ['projects', '프로젝트 및 활동'], ['awards', '수상'], ['other', '기타 정보']];
@@ -507,6 +533,8 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     </div></section>
 
     {detailLevel >= 1 && <section className="play-facts"><p>{t.playFacts}</p><div>{t.facts.map((fact, i) => <TiltCard key={fact}><span>0{i + 1}</span><h3>{fact}</h3></TiltCard>)}</div></section>}
+
+    {detailLevel === 2 && <FullArchive locale={locale} />}
 
     <footer className="play-footer"><h2>sk0829<br />@hanyang.ac.kr</h2><div><span>{t.footer}</span><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="#play-top">TOP ↑</a></div></footer>
   </main>;
