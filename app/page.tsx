@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 
 type Locale = 'en' | 'ko';
 type Mode = 'info' | 'play' | null;
@@ -271,8 +271,8 @@ const playProjectDetails: Localized[][] = [
 function LocaleSwitcher({ locale, setLocale, inverse = false }: { locale: Locale; setLocale: (locale: Locale) => void; inverse?: boolean }) {
   const t = ui[locale];
   return <div className={`locale-switcher${inverse ? ' inverse' : ''}`} aria-label="Language">
-    <button className={locale === 'en' ? 'active' : ''} type="button" aria-label={t.switchEnglish} aria-pressed={locale === 'en'} onClick={() => setLocale('en')}><span aria-hidden="true">🇺🇸</span><small>{t.eng}</small></button>
-    <button className={locale === 'ko' ? 'active' : ''} type="button" aria-label={t.switchKorean} aria-pressed={locale === 'ko'} onClick={() => setLocale('ko')}><span aria-hidden="true">🇰🇷</span><small>{t.kor}</small></button>
+    <button className={locale === 'en' ? 'active' : ''} type="button" aria-label={t.switchEnglish} aria-pressed={locale === 'en'} onClick={() => setLocale('en')}><span aria-hidden="true"><img src="https://flagcdn.com/w40/us.png" alt="" /></span><small>{t.eng}</small></button>
+    <button className={locale === 'ko' ? 'active' : ''} type="button" aria-label={t.switchKorean} aria-pressed={locale === 'ko'} onClick={() => setLocale('ko')}><span aria-hidden="true"><img src="https://flagcdn.com/w40/kr.png" alt="" /></span><small>{t.kor}</small></button>
   </div>;
 }
 
@@ -392,14 +392,15 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const [detailLevel, setDetailLevel] = useState<DetailLevel>(0);
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const tiltGesture = useRef({ active: false, startX: 0, startValue: 0 });
   const micro = locale === 'en' ? {
     lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
-    drag: 'DRAG, THEN RELEASE',
+    drag: 'HOLD AND TILT, THEN RELEASE',
     levels: ['BRIEF', 'STANDARD', 'DETAILED'], depth: 'DETAIL',
     discovered: 'VIEWED', random: 'NEXT TOPIC', cursor: 'MOVE TO INTERACT',
   } : {
     lockKicker: '인터랙티브 / 02', lockTitle: <>얼마나 자세히<br /><em>볼까요?</em></>,
-    drag: '드래그한 뒤 놓아주세요',
+    drag: '잡고 기울인 뒤 놓아주세요',
     levels: ['간단히', '기본', '자세히'], depth: '상세도',
     discovered: '확인한 주제', random: '다음 주제', cursor: '움직여 보세요',
   };
@@ -423,10 +424,31 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     selectTopic(next);
   };
   const setDepth = (value: number) => {
-    setUnlockValue(value);
-    setDetailLevel(value < 34 ? 0 : value < 67 ? 1 : 2);
+    const next = Math.max(0, Math.min(100, value));
+    setUnlockValue(next);
+    setDetailLevel(next < 34 ? 0 : next < 67 ? 1 : 2);
   };
   const unlock = () => window.setTimeout(() => setUnlocked(true), 180);
+  const beginTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
+    tiltGesture.current = { active: true, startX: event.clientX, startValue: unlockValue };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const moveTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!tiltGesture.current.active) return;
+    setDepth(tiltGesture.current.startValue + (event.clientX - tiltGesture.current.startX) / 2.4);
+  };
+  const endTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!tiltGesture.current.active) return;
+    tiltGesture.current.active = false;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    unlock();
+  };
+  const tiltWithKeyboard = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Enter') return;
+    event.preventDefault();
+    if (event.key === 'Enter') return unlock();
+    setDepth(unlockValue + (event.key === 'ArrowRight' ? 10 : -10));
+  };
   const pointer = (event: ReactPointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty('--mx', `${event.clientX - rect.left}px`);
@@ -438,15 +460,28 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="unlock-stage">
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
-      <div className="unlock-control">
-        <div className="unlock-track" aria-hidden="true"><i style={{ width: `${unlockValue}%` }} /><b style={{ left: `calc(${unlockValue}% - ${unlockValue * .58}px + 5px)` }}>↗</b></div>
-        <input type="range" min="0" max="100" value={unlockValue} aria-label={micro.drag}
-          onInput={event => setDepth(event.currentTarget.valueAsNumber)}
-          onPointerUp={unlock} onKeyUp={unlock} />
-        <div className="unlock-label"><strong>{micro.drag}</strong><b>{micro.levels[detailLevel]}</b></div>
+      <div className="tilt-control">
+        <div className={`tilt-vessel${tiltGesture.current.active ? ' active' : ''}`} role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
+          style={{ '--fill': `${unlockValue}%`, '--tilt': `${-8 + unlockValue * .16}deg` } as CSSProperties}
+          onPointerDown={beginTilt} onPointerMove={moveTilt} onPointerUp={endTilt} onPointerCancel={endTilt} onKeyDown={tiltWithKeyboard}>
+          <div className="tilt-liquid" aria-hidden="true"><i /><i /></div>
+          <div className="tilt-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
+        </div>
+        <p>{micro.drag}</p>
         <div className="unlock-scale" aria-hidden="true">{micro.levels.map((label, index) => <span className={detailLevel === index ? 'active' : ''} key={label}>{label}</span>)}</div>
       </div>
     </section>
+  </main>;
+
+  if (detailLevel === 0) return <main className="play-mode brief-view">
+    <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
+    <section className="brief-shell">
+      <header><p>{t.playKicker}</p><h1>{locale === 'en' ? 'SeoKyoung Kim.' : '김서경.'}</h1><span>{t.playIntro}</span></header>
+      <nav className="brief-depth" aria-label={micro.depth}><span>{micro.depth}</span>{micro.levels.map((level, index) => <button type="button" className={detailLevel === index ? 'active' : ''} key={level} onClick={() => setDetailLevel(index as DetailLevel)}>{level}</button>)}</nav>
+      <div className="brief-list"><p>{locale === 'en' ? 'AREAS' : '관심 분야'}</p>{playTopics.map((item, index) => <button type="button" key={item.key} onClick={() => selectTopic(index)}><span>{item.code}</span><strong>{localize(item.label)}</strong><b>↗</b></button>)}</div>
+      <div className="brief-projects"><p>{t.selectedProjects}</p>{projects.map(project => <article key={project.number}><span>{project.number}</span><h2>{localize(project.title)}</h2><time>{project.date}</time></article>)}</div>
+    </section>
+    <footer className="brief-footer"><span>{t.footer}</span><a href="mailto:sk0829@hanyang.ac.kr">sk0829@hanyang.ac.kr ↗</a></footer>
   </main>;
 
   return <main className={`play-mode unlocked-view detail-${detailLevel}`} onPointerMove={pointer}>
