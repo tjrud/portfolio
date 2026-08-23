@@ -462,9 +462,9 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
       <div className="tilt-control">
         <div className={`tilt-vessel${tiltGesture.current.active ? ' active' : ''}`} role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
-          style={{ '--fill': `${unlockValue}%`, '--tilt': `${-8 + unlockValue * .16}deg` } as CSSProperties}
+          style={{ '--fill': `${unlockValue}%`, '--tilt': `${-2.5 + unlockValue * .05}deg` } as CSSProperties}
           onPointerDown={beginTilt} onPointerMove={moveTilt} onPointerUp={endTilt} onPointerCancel={endTilt} onKeyDown={tiltWithKeyboard}>
-          <div className="tilt-liquid" aria-hidden="true"><i /><i /></div>
+          <div className="tilt-liquid" aria-hidden="true" />
           <div className="tilt-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
         </div>
         <p>{micro.drag}</p>
