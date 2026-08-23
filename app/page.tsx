@@ -466,7 +466,7 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
       <div className="box-control">
         <div className="motion-box" role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
-          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--box-y': `${boxOffset}px`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * -.1))}deg` } as CSSProperties}
+          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * -.1))}deg` } as CSSProperties}
           onPointerDown={beginTilt} onPointerMove={moveTilt} onPointerUp={endTilt} onPointerCancel={endTilt} onKeyDown={tiltWithKeyboard}>
           <div className="ball-track" aria-hidden="true"><i /></div>
           <div className="box-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
