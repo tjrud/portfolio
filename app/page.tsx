@@ -392,15 +392,16 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const [detailLevel, setDetailLevel] = useState<DetailLevel>(0);
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const tiltGesture = useRef({ active: false, startX: 0, startValue: 0 });
+  const [boxOffset, setBoxOffset] = useState(0);
+  const boxGesture = useRef({ active: false, startY: 0, startValue: 0 });
   const micro = locale === 'en' ? {
     lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
-    drag: 'HOLD AND TILT, THEN RELEASE',
+    drag: 'LIFT THE BOX, THEN RELEASE',
     levels: ['BRIEF', 'STANDARD', 'DETAILED'], depth: 'DETAIL',
     discovered: 'VIEWED', random: 'NEXT TOPIC', cursor: 'MOVE TO INTERACT',
   } : {
     lockKicker: '인터랙티브 / 02', lockTitle: <>얼마나 자세히<br /><em>볼까요?</em></>,
-    drag: '잡고 기울인 뒤 놓아주세요',
+    drag: '상자를 잡고 위로 올린 뒤 놓아주세요',
     levels: ['간단히', '기본', '자세히'], depth: '상세도',
     discovered: '확인한 주제', random: '다음 주제', cursor: '움직여 보세요',
   };
@@ -430,16 +431,19 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   };
   const unlock = () => window.setTimeout(() => setUnlocked(true), 180);
   const beginTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
-    tiltGesture.current = { active: true, startX: event.clientX, startValue: unlockValue };
+    boxGesture.current = { active: true, startY: event.clientY, startValue: unlockValue };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
   const moveTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!tiltGesture.current.active) return;
-    setDepth(tiltGesture.current.startValue + (event.clientX - tiltGesture.current.startX) / 2.4);
+    if (!boxGesture.current.active) return;
+    const delta = event.clientY - boxGesture.current.startY;
+    setBoxOffset(Math.max(-42, Math.min(42, delta)));
+    setDepth(boxGesture.current.startValue - delta / 1.45);
   };
   const endTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!tiltGesture.current.active) return;
-    tiltGesture.current.active = false;
+    if (!boxGesture.current.active) return;
+    boxGesture.current.active = false;
+    setBoxOffset(0);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
     unlock();
   };
@@ -460,12 +464,12 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="unlock-stage">
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
-      <div className="tilt-control">
-        <div className={`tilt-vessel${tiltGesture.current.active ? ' active' : ''}`} role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
-          style={{ '--fill': `${unlockValue}%`, '--tilt': `${-2.5 + unlockValue * .05}deg` } as CSSProperties}
+      <div className="box-control">
+        <div className="motion-box" role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
+          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--box-y': `${boxOffset}px`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * -.1))}deg` } as CSSProperties}
           onPointerDown={beginTilt} onPointerMove={moveTilt} onPointerUp={endTilt} onPointerCancel={endTilt} onKeyDown={tiltWithKeyboard}>
-          <div className="tilt-liquid" aria-hidden="true" />
-          <div className="tilt-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
+          <div className="ball-track" aria-hidden="true"><i /></div>
+          <div className="box-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
         </div>
         <p>{micro.drag}</p>
         <div className="unlock-scale" aria-hidden="true">{micro.levels.map((label, index) => <span className={detailLevel === index ? 'active' : ''} key={label}>{label}</span>)}</div>
