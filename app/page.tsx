@@ -17,10 +17,10 @@ const ui = {
     current: 'AI undergraduate at Hanyang University ERICA', expected: 'Expected Feb. 2027', completed: 'Completed Feb. 2025',
     intro: 'I study Artificial Intelligence at Hanyang University ERICA. My work includes autonomous driving, industrial anomaly detection, and vehicle monitoring.',
     infoHint: 'A factual record of study, work, and things I have built.', live: 'Live site ↗', source: 'GitHub ↗',
-    playKicker: 'EXPLORE', playTitleMain: <>Work across<br /><em>AI and motion.</em></>,
-    playIntro: 'Projects, interests, and roles—connected.', orbitHint: 'Choose a coordinate', selectedSignal: 'Focus',
+    playKicker: 'SELECTED WORK', playTitleMain: <>Projects and<br /><em>interests.</em></>,
+    playIntro: 'A different way to browse what I have worked on.', orbitHint: 'Choose a topic', selectedSignal: 'Topic',
     selectedProjects: 'Projects', tiltHint: 'Move across the cards', playFacts: 'At a glance',
-    facts: ['3 AI internships', '2 engineering degrees', '4 selected awards'],
+    facts: ['3 AI internships', '1 engineering degree', '4 selected awards'],
     footer: 'SeoKyoung Kim. · AI Portfolio · 2026',
   },
   ko: {
@@ -32,10 +32,10 @@ const ui = {
     current: '한양대학교 ERICA 인공지능학과 학부생', expected: '2027년 2월 졸업 예정', completed: '2025년 2월 졸업',
     intro: '한양대학교 ERICA에서 인공지능을 공부하고 있습니다. 자율주행, 산업 이상 탐지, 차량 모니터링 작업을 해왔습니다.',
     infoHint: '공부한 것, 일한 곳, 직접 만든 것을 사실대로 정리했습니다.', live: '사이트 보기 ↗', source: '깃허브 ↗',
-    playKicker: '탐색', playTitleMain: <>AI와 움직임을<br /><em>연결한 작업.</em></>,
-    playIntro: '프로젝트, 관심 분야, 활동의 연결.', orbitHint: '좌표를 선택하세요', selectedSignal: '선택',
+    playKicker: '주요 작업', playTitleMain: <>프로젝트와<br /><em>관심 분야.</em></>,
+    playIntro: '제가 해온 작업을 다른 방식으로 살펴봅니다.', orbitHint: '주제를 선택하세요', selectedSignal: '주제',
     selectedProjects: '프로젝트', tiltHint: '카드 위에서 움직여보세요', playFacts: '한눈에 보기',
-    facts: ['AI 인턴십 3회', '공학 학사 과정 2개', '주요 수상 4건'],
+    facts: ['AI 인턴십 3회', '공학 학사 1개', '주요 수상 4건'],
     footer: '김서경 · AI 포트폴리오 · 2026',
   },
 };
@@ -68,11 +68,6 @@ const awards: Array<{ year: string; event: Localized; result: Localized }> = [
   { year: '2025', event: { en: 'Volkswagen Group Korea SEA:ME Hackathon', ko: '폭스바겐우리재단 씨:미 해커톤' }, result: { en: 'Excellence Award', ko: '최우수상' } },
   { year: '2025', event: { en: '8th Kookmin University Autonomous Driving Competition', ko: '제8회 국민대학교 자율주행 경진대회' }, result: { en: '3rd Place', ko: '3위' } },
   { year: '2024', event: { en: 'Autonomous Vehicle Competition, Daejeon University', ko: '대전대학교 자율주행 자동차 경진대회' }, result: { en: 'Grand Prize', ko: '대상' } },
-];
-
-const skillGroups = [
-  ['Language', 'Python · C++'], ['Machine Learning / AI', 'PyTorch · OpenCV · YOLO'], ['MLOps & Tools', 'Git/GitHub · ONNX · MLflow · Google Cloud'],
-  ['Robotics & Embedded', 'ROS2 · rclcpp · rclpy · Sensor integration'], ['Web', 'Next.js · React · TypeScript · Vercel'], ['Collaboration', 'Notion · Slack'],
 ];
 
 const sourceEducation = [
@@ -393,20 +388,20 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const localize = (value: Localized) => value[locale];
   const [activeTopic, setActiveTopic] = useState(0);
   const [visitedTopics, setVisitedTopics] = useState<number[]>([0]);
-  const [unlockValue, setUnlockValue] = useState(50);
-  const [detailLevel, setDetailLevel] = useState<DetailLevel>(1);
+  const [unlockValue, setUnlockValue] = useState(0);
+  const [detailLevel, setDetailLevel] = useState<DetailLevel>(0);
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const micro = locale === 'en' ? {
-    lockKicker: 'INTERACTIVE MODE / 02', lockTitle: <>How much do you want<br />to know <em>about me?</em></>,
-    drag: 'DRAG TO CHOOSE, THEN RELEASE', ready: 'SET THE DEPTH',
-    levels: ['A GLIMPSE', 'SELECTED', 'FULL STORY'], depth: 'INFORMATION',
-    discovered: 'SIGNALS FOUND', random: 'RANDOM SIGNAL', cursor: 'POINTER REACTIVE',
+    lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
+    drag: 'DRAG, THEN RELEASE',
+    levels: ['BRIEF', 'STANDARD', 'DETAILED'], depth: 'DETAIL',
+    discovered: 'VIEWED', random: 'NEXT TOPIC', cursor: 'MOVE TO INTERACT',
   } : {
-    lockKicker: '인터랙티브 모드 / 02', lockTitle: <>저에 대해<br /><em>얼마나 알고 싶나요?</em></>,
-    drag: '드래그해 선택한 뒤 놓아주세요', ready: '정보의 깊이를 선택하세요',
-    levels: ['짧게 보기', '골라 보기', '전부 보기'], depth: '정보량',
-    discovered: '발견한 신호', random: '랜덤 신호', cursor: '포인터 반응 중',
+    lockKicker: '인터랙티브 / 02', lockTitle: <>얼마나 자세히<br /><em>볼까요?</em></>,
+    drag: '드래그한 뒤 놓아주세요',
+    levels: ['간단히', '기본', '자세히'], depth: '상세도',
+    discovered: '확인한 주제', random: '다음 주제', cursor: '움직여 보세요',
   };
 
   useEffect(() => {
@@ -442,16 +437,15 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   if (!unlocked) return <main className="play-mode unlock-mode" onPointerMove={pointer}>
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="unlock-stage">
-      <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1><span>{micro.ready}</span></div>
+      <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
       <div className="unlock-control">
-        <div className="unlock-track" aria-hidden="true"><i style={{ width: `${unlockValue}%` }} /></div>
+        <div className="unlock-track" aria-hidden="true"><i style={{ width: `${unlockValue}%` }} /><b style={{ left: `calc(${unlockValue}% - ${unlockValue * .58}px + 5px)` }}>↗</b></div>
         <input type="range" min="0" max="100" value={unlockValue} aria-label={micro.drag}
           onInput={event => setDepth(event.currentTarget.valueAsNumber)}
           onPointerUp={unlock} onKeyUp={unlock} />
         <div className="unlock-label"><strong>{micro.drag}</strong><b>{micro.levels[detailLevel]}</b></div>
         <div className="unlock-scale" aria-hidden="true">{micro.levels.map((label, index) => <span className={detailLevel === index ? 'active' : ''} key={label}>{label}</span>)}</div>
       </div>
-      <div className="unlock-orbits" aria-hidden="true"><i /><i /><i /></div>
     </section>
   </main>;
 
@@ -466,8 +460,6 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
       </div>
       <div className="play-console"><span><i />{micro.cursor}</span><label><b>{micro.depth}</b><input type="range" min="0" max="2" step="1" value={detailLevel} onInput={event => setDetailLevel(Number(event.currentTarget.value) as DetailLevel)} /><em>{micro.levels[detailLevel]}</em></label><strong>{micro.discovered} {String(visitedTopics.length).padStart(2, '0')} / 04</strong><button type="button" onClick={randomTopic}>{micro.random} ↗</button></div>
     </section>
-
-    <div className="skill-marquee" aria-hidden="true"><div>{[...skillGroups, ...skillGroups].map(([group], i) => <span key={`${group}-${i}`}>{group} <b>✦</b></span>)}</div></div>
 
     <section className="play-projects"><header><p>{t.selectedProjects}</p><span>{t.tiltHint}</span></header><div className="play-project-grid">
       {projects.map((project, index) => <TiltCard className={`play-project project-${index + 1}`} key={project.number}><div><span>{project.number}</span><span>{project.date}</span></div><h2>{localize(project.title)}</h2>{detailLevel >= 1 && <p>{localize(project.detail)}</p>}{detailLevel === 2 && <ul>{playProjectDetails[index].map(item => <li key={item.en}>{localize(item)}</li>)}</ul>}<footer><div>{project.tags.map(tag => <i key={tag}>{tag}</i>)}</div>{project.href && <a href={project.href} target="_blank" rel="noreferrer">↗</a>}</footer></TiltCard>)}
