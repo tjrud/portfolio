@@ -419,7 +419,9 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [boxOffset, setBoxOffset] = useState(0);
-  const boxGesture = useRef({ active: false, startY: 0, startValue: 0, side: 1 });
+  const boxGesture = useRef({ active: false, startY: 0, side: 1 });
+  const tiltInput = useRef(0);
+  const ballPhysics = useRef({ position: 0, velocity: 0, lastTime: 0 });
   const micro = locale === 'en' ? {
     lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
     drag: 'LOWER EITHER SIDE, THEN RELEASE',
@@ -455,31 +457,63 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     setUnlockValue(next);
     setDetailLevel(next < 34 ? 0 : next < 67 ? 1 : 2);
   };
-  const unlock = () => window.setTimeout(() => setUnlocked(true), 180);
+  useEffect(() => {
+    if (unlocked) return;
+    let frame = 0;
+    const tick = (time: number) => {
+      const physics = ballPhysics.current;
+      if (!physics.lastTime) physics.lastTime = time;
+      const deltaTime = Math.min(.032, (time - physics.lastTime) / 1000);
+      physics.lastTime = time;
+      const angle = tiltInput.current * .1 * Math.PI / 180;
+      physics.velocity += Math.sin(angle) * 4000 * deltaTime;
+      physics.velocity *= Math.exp(-.9 * deltaTime);
+      physics.position += physics.velocity * deltaTime;
+      if (physics.position < 0) {
+        physics.position = 0;
+        physics.velocity = Math.abs(physics.velocity) * .34;
+      } else if (physics.position > 100) {
+        physics.position = 100;
+        physics.velocity = -Math.abs(physics.velocity) * .34;
+      }
+      if (Math.abs(tiltInput.current) < .1 && Math.abs(physics.velocity) < .04) physics.velocity = 0;
+      setDepth(physics.position);
+      frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [unlocked]);
+  const unlock = (delay = 180) => window.setTimeout(() => setUnlocked(true), delay);
   const beginTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    boxGesture.current = { active: true, startY: event.clientY, startValue: unlockValue, side: event.clientX < rect.left + rect.width / 2 ? -1 : 1 };
+    boxGesture.current = { active: true, startY: event.clientY, side: event.clientX < rect.left + rect.width / 2 ? -1 : 1 };
     event.currentTarget.setPointerCapture(event.pointerId);
   };
   const moveTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!boxGesture.current.active) return;
     const delta = event.clientY - boxGesture.current.startY;
     const directedDelta = delta * boxGesture.current.side;
-    setBoxOffset(Math.max(-42, Math.min(42, directedDelta)));
-    setDepth(boxGesture.current.startValue + directedDelta / 1.45);
+    const nextTilt = Math.max(-42, Math.min(42, directedDelta));
+    tiltInput.current = nextTilt;
+    setBoxOffset(nextTilt);
   };
   const endTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!boxGesture.current.active) return;
     boxGesture.current.active = false;
+    tiltInput.current = 0;
     setBoxOffset(0);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    unlock();
+    unlock(650);
   };
   const tiltWithKeyboard = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Enter') return;
     event.preventDefault();
-    if (event.key === 'Enter') return unlock();
-    setDepth(unlockValue + (event.key === 'ArrowRight' ? 10 : -10));
+    if (event.key === 'Enter') return unlock(450);
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    ballPhysics.current.velocity += direction * 26;
+    tiltInput.current = direction * 24;
+    setBoxOffset(direction * 24);
+    window.setTimeout(() => { tiltInput.current = 0; setBoxOffset(0); }, 180);
   };
   const pointer = (event: ReactPointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -494,7 +528,7 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
       <div className="unlock-copy"><p>{micro.lockKicker}</p><h1>{micro.lockTitle}</h1></div>
       <div className="box-control">
         <div className="motion-box" role="slider" tabIndex={0} aria-label={micro.drag} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(unlockValue)}
-          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * .1))}deg` } as CSSProperties}
+          style={{ '--ball-left': `calc(${unlockValue}% - ${unlockValue * .6}px + 8px)`, '--ball-spin': `${unlockValue * 7.2}deg`, '--track-tilt': `${Math.max(-4, Math.min(4, boxOffset * .1))}deg` } as CSSProperties}
           onPointerDown={beginTilt} onPointerMove={moveTilt} onPointerUp={endTilt} onPointerCancel={endTilt} onKeyDown={tiltWithKeyboard}>
           <div className="ball-track" aria-hidden="true"><i /></div>
           <div className="box-reading"><strong>{micro.levels[detailLevel]}</strong><span>{Math.round(unlockValue)}%</span></div>
