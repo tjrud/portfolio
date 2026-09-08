@@ -11,7 +11,7 @@ const ui = {
   en: {
     choose: 'Portfolio · 2026', gateTitle: <>Hi, I’m<br /><em>SeoKyoung Kim.</em></>,
     readCode: '01', readTitle: 'Information', readBody: 'CV, projects, and experience.',
-    playCode: '02', playTitle: 'Interactive', playBody: 'Move, click, and explore.', enter: 'Open ↗',
+    playCode: '02', playTitle: 'Interactive', playBody: 'Move, click, and explore.', enter: 'Open ↗', comingSoon: 'Coming soon',
     startOver: 'Choose mode', profile: 'Profile', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: 'Education', internships: 'Internships', projects: 'Projects', activities: 'Activities', awards: 'Awards', skills: 'Skills', other: 'Other background', contact: 'Contact',
     current: 'AI undergraduate at Hanyang University ERICA', expected: 'Expected Feb. 2027', completed: 'Completed Feb. 2025',
@@ -25,7 +25,7 @@ const ui = {
   ko: {
     choose: '포트폴리오 · 2026', gateTitle: <>안녕하세요,<br /><em>김서경입니다.</em></>,
     readCode: '01', readTitle: '정보', readBody: '이력, 프로젝트, 경험.',
-    playCode: '02', playTitle: '인터랙티브', playBody: '움직이고 누르며 탐색합니다.', enter: '열기 ↗',
+    playCode: '02', playTitle: '인터랙티브', playBody: '움직이고 누르며 탐색합니다.', enter: '열기 ↗', comingSoon: '준비 중',
     startOver: '모드 선택', profile: '프로필', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: '학력', internships: '인턴십', projects: '프로젝트', activities: '활동', awards: '수상', skills: '기술', other: '다른 경험', contact: '연락처',
     current: '한양대학교 ERICA 인공지능학과 학부생', expected: '2027년 2월 졸업 예정', completed: '2025년 2월 졸업',
@@ -293,11 +293,8 @@ function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (l
       <button className="mode-option mode-option-info" onClick={() => choose('info')}>
         <span>{t.readCode}</span><span className="option-preview">Aa</span><strong>{t.readTitle}</strong><p>{t.readBody}</p><b>{t.enter}</b>
       </button>
-      <button className="mode-option mode-option-play" onClick={event => {
-        const rect = event.currentTarget.querySelector('.option-orbit')?.getBoundingClientRect();
-        choose('play', rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined);
-      }}>
-        <span>{t.playCode}</span><span className="option-orbit"><i /><i /><i /></span><strong>{t.playTitle}</strong><p>{t.playBody}</p><b>{t.enter}</b>
+      <button className="mode-option mode-option-play" type="button" disabled aria-label={`${t.playTitle} — ${t.comingSoon}`}>
+        <span>{t.playCode}</span><span className="option-orbit"><i /><i /><i /></span><strong>{t.playTitle}</strong><p>{t.playBody}</p><b>{t.comingSoon}</b>
       </button>
     </div>
   </main>;
