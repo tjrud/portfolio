@@ -19,8 +19,7 @@ const ui = {
     infoHint: 'A factual record of study, work, and things I have built.', live: 'Live site ↗', source: 'GitHub ↗',
     playKicker: 'SELECTED WORK', playTitleMain: <>Projects and<br /><em>interests.</em></>,
     playIntro: 'A different way to browse what I have worked on.', orbitHint: 'Choose a topic', selectedSignal: 'Topic',
-    selectedProjects: 'Projects', tiltHint: 'Move across the cards', playFacts: 'At a glance',
-    facts: ['3 AI internships', '1 engineering degree', '4 selected awards'],
+    selectedProjects: 'Projects', tiltHint: 'Move across the cards',
     footer: 'SeoKyoung Kim. · AI Portfolio · 2026',
   },
   ko: {
@@ -34,8 +33,7 @@ const ui = {
     infoHint: '공부한 것, 일한 곳, 직접 만든 것을 사실대로 정리했습니다.', live: '사이트 보기 ↗', source: '깃허브 ↗',
     playKicker: '주요 작업', playTitleMain: <>프로젝트와<br /><em>관심 분야.</em></>,
     playIntro: '제가 해온 작업을 다른 방식으로 살펴봅니다.', orbitHint: '주제를 선택하세요', selectedSignal: '주제',
-    selectedProjects: '프로젝트', tiltHint: '카드 위에서 움직여보세요', playFacts: '한눈에 보기',
-    facts: ['AI 인턴십 3회', '공학 학사 1개', '주요 수상 4건'],
+    selectedProjects: '프로젝트', tiltHint: '카드 위에서 움직여보세요',
     footer: '김서경 · AI 포트폴리오 · 2026',
   },
 };
@@ -426,12 +424,10 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
     drag: 'LOWER EITHER SIDE, THEN RELEASE',
     levels: ['BRIEF', 'STANDARD', 'DETAILED'], depth: 'DETAIL',
-    discovered: 'VIEWED', random: 'NEXT TOPIC', cursor: 'MOVE TO INTERACT',
   } : {
     lockKicker: '인터랙티브 / 02', lockTitle: <>얼마나 자세히<br /><em>볼까요?</em></>,
     drag: '왼쪽이나 오른쪽을 잡고 내려보세요',
     levels: ['간단히', '기본', '자세히'], depth: '상세도',
-    discovered: '확인한 주제', random: '다음 주제', cursor: '움직여 보세요',
   };
 
   useEffect(() => {
@@ -447,10 +443,6 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const selectTopic = (index: number) => {
     setActiveTopic(index);
     setVisitedTopics(current => current.includes(index) ? current : [...current, index]);
-  };
-  const randomTopic = () => {
-    const next = (activeTopic + 1 + Math.floor(Math.random() * (playTopics.length - 1))) % playTopics.length;
-    selectTopic(next);
   };
   const setDepth = (value: number) => {
     const next = Math.max(0, Math.min(100, value));
@@ -559,14 +551,11 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
         {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}${visitedTopics.includes(index) ? ' visited' : ''}`} key={item.key} onClick={() => selectTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
         <div className="signal-card" aria-live="polite"><p>{t.selectedSignal} / {topic.code}</p><h2>{localize(topic.title)}</h2>{detailLevel >= 1 && <span>{localize(topic.body)}</span>}{detailLevel === 2 && <small>{localize(playTopicDetails[activeTopic])}</small>}</div>
       </div>
-      <div className="play-console"><span><i />{micro.cursor}</span><label><b>{micro.depth}</b><input type="range" min="0" max="2" step="1" value={detailLevel} onInput={event => setDetailLevel(Number(event.currentTarget.value) as DetailLevel)} /><em>{micro.levels[detailLevel]}</em></label><strong>{micro.discovered} {String(visitedTopics.length).padStart(2, '0')} / 04</strong><button type="button" onClick={randomTopic}>{micro.random} ↗</button></div>
     </section>
 
     <section className="play-projects"><header><p>{t.selectedProjects}</p><span>{t.tiltHint}</span></header><div className="play-project-grid">
       {projects.map((project, index) => <TiltCard className={`play-project project-${index + 1}`} key={project.number}><div><span>{project.number}</span><span>{project.date}</span></div><h2>{localize(project.title)}</h2>{detailLevel >= 1 && <p>{localize(project.detail)}</p>}{detailLevel === 2 && <ul>{playProjectDetails[index].map(item => <li key={item.en}>{localize(item)}</li>)}</ul>}<footer><div>{project.tags.map(tag => <i key={tag}>{tag}</i>)}</div>{project.href && <a href={project.href} target="_blank" rel="noreferrer">↗</a>}</footer></TiltCard>)}
     </div></section>
-
-    {detailLevel >= 1 && <section className="play-facts"><p>{t.playFacts}</p><div>{t.facts.map((fact, i) => <TiltCard key={fact}><span>0{i + 1}</span><h3>{fact}</h3></TiltCard>)}</div></section>}
 
     {detailLevel === 2 && <FullArchive locale={locale} />}
 

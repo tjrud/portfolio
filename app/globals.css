@@ -166,12 +166,6 @@ p { margin: 0; }
 :lang(ko) .play-heading h1 { font-size: clamp(38px, 4.5vw, 64px); line-height: 1.08; letter-spacing: -.04em; }
 .play-heading h1 em { color: var(--blue); font: inherit; font-style: normal; }
 .play-heading > span { display: block; max-width: 470px; color: #52657c; font-size: 17px; line-height: 1.65; }
-.play-console { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 20px; padding: 14px 17px; border: 1px solid rgba(9,29,56,.11); border-radius: 14px; background: rgba(255,255,255,.58); color: #60738a; font-size: 12px; font-weight: 750; letter-spacing: .07em; backdrop-filter: blur(14px); }
-.play-console span { display: flex; align-items: center; gap: 9px; }.play-console span i { width: 7px; height: 7px; border-radius: 50%; background: #43b78b; box-shadow: 0 0 0 5px rgba(67,183,139,.12); }
-.play-console label { display: flex; align-items: center; gap: 9px; }.play-console label b { color: #60738a; font-size: 10px; }.play-console label input { width: 86px; accent-color: var(--blue); }.play-console label em { min-width: 78px; color: var(--blue); font-size: 10px; font-style: normal; }
-.play-console strong { color: var(--navy); }
-.play-console button { padding: 8px 11px; border: 1px solid rgba(47,125,246,.24); border-radius: 999px; background: rgba(255,255,255,.76); color: var(--blue); font-size: 12px; font-weight: 800; cursor: pointer; transition: transform .2s, background .2s, color .2s; }
-.play-console button:hover { transform: rotate(-2deg) scale(1.04); background: var(--blue); color: white; }
 .constellation { position: relative; width: min(620px, 48vw); aspect-ratio: 1; justify-self: center; }
 .orbit-ring { position: absolute; inset: 8%; border: 1px solid rgba(47,125,246,.24); border-radius: 50%; }
 .ring-two { inset: 24%; border-style: dashed; animation: orbitSpin 25s linear infinite reverse; }
@@ -190,7 +184,7 @@ p { margin: 0; }
 .signal-card span { color: #52657c; font-size: clamp(13px, 1vw, 15px); line-height: 1.55; }
 .signal-card small { margin-top: 12px; color: #75869a; font-size: 11px; line-height: 1.45; }
 .play-projects { padding: 110px 4vw 130px; }
-.play-projects > header, .play-facts > p { display: flex; justify-content: space-between; margin-bottom: 28px; color: #61738a; font-size: 13px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+.play-projects > header { display: flex; justify-content: space-between; margin-bottom: 28px; color: #61738a; font-size: 13px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
 .play-project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; perspective: 1100px; }
 .tilt-card { --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 50%; transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d; transition: transform .12s ease-out, border-color .2s; }
 .play-project { min-height: 460px; padding: 27px; display: flex; flex-direction: column; border: 1px solid rgba(9,29,56,.12); border-radius: 18px; background: rgba(255,255,255,.8); box-shadow: 0 12px 35px rgba(51,79,111,.06); }
@@ -204,11 +198,6 @@ p { margin: 0; }
 .play-project footer i { padding: 6px 8px; border: 1px solid rgba(9,29,56,.12); border-radius: 6px; color: #61738a; font-size: 12px; font-style: normal; }
 .play-project footer a { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--blue); }
 .project-2 { transform: translateY(45px) rotateX(var(--rx)) rotateY(var(--ry)); }
-.play-facts { padding: 0 4vw 130px; }
-.play-facts > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; perspective: 1000px; }
-.play-facts .tilt-card { min-height: 180px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(9,29,56,.12); border-radius: 15px; background: rgba(255,255,255,.66); }
-.play-facts .tilt-card span { color: var(--blue); font-size: 13px; }
-.play-facts h3 { margin: 0; font-size: clamp(22px, 2.5vw, 36px); line-height: 1.05; letter-spacing: -.04em; }
 .play-full-archive { margin: 0 4vw 130px; padding: clamp(42px, 6vw, 78px) clamp(24px, 5vw, 72px) 80px; border: 1px solid rgba(9,29,56,.12); border-radius: 20px; background: rgba(255,255,255,.88); }
 .play-full-archive > header { padding-bottom: 38px; border-bottom: 1px solid var(--navy); }.play-full-archive > header p { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: .12em; }.play-full-archive > header h2 { margin: 16px 0 12px; font-size: clamp(32px, 4vw, 52px); line-height: 1.05; letter-spacing: -.045em; }.play-full-archive > header span { color: #657386; font-size: 14px; line-height: 1.6; }
 .full-record-body { max-width: 1080px; }.full-record-body .cv-section { padding-top: 58px; }.full-record-body .source-detail { padding-block: 24px; }.full-record-body .source-detail h3 { font-size: 17px; }.full-record-body .source-detail li { font-size: 14px; line-height: 1.6; }.full-record-body .other-source-list .source-detail { padding-block: 28px; }
@@ -277,9 +266,6 @@ p { margin: 0; }
   .motion-box { height: 165px; padding: 21px 18px; }
   .ball-track { left: 18px; right: 18px; bottom: 22px; height: 58px; }
   .ball-track i { top: 9px; width: 38px; height: 38px; }
-  .play-console { grid-template-columns: 1fr auto; }
-  .play-console span { grid-column: 1 / -1; }
-  .play-console label { grid-column: 1 / -1; }
   .constellation { width: 100%; margin-top: 45px; aspect-ratio: auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .orbit-ring { display: none; }
   .orbit-node { position: static; border-radius: 10px; }
@@ -288,8 +274,6 @@ p { margin: 0; }
   .signal-card span { font-size: 14px; }
   .play-projects { padding: 80px 18px 95px; }
   .play-projects > header span { display: none; }
-  .play-facts { padding: 0 18px 90px; }
-  .play-facts > div { grid-template-columns: 1fr; }
   .play-full-archive { margin: 0 18px 85px; padding: 38px 20px 55px; border-radius: 16px; }
   .play-full-archive > header h2 { font-size: 32px; }
   .full-record-body .cv-section { padding-top: 45px; }
