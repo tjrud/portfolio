@@ -11,7 +11,7 @@ const ui = {
   en: {
     choose: 'Portfolio · 2026', gateTitle: <>Hi, I’m<br /><em>SeoKyoung Kim.</em></>,
     readCode: '01', readTitle: 'Information', readBody: 'CV, projects, and experience.',
-    playCode: '02', playTitle: 'Interactive', playBody: 'Move, click, and explore.', enter: 'Open ↗', comingSoon: 'Coming soon',
+    playCode: '02', playTitle: 'Interactive', playBody: 'Move, click, and explore.', enter: 'Open ↗',
     startOver: 'Choose mode', profile: 'Profile', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: 'Education', internships: 'Internships', projects: 'Projects', activities: 'Activities', awards: 'Awards', skills: 'Skills', other: 'Other background', contact: 'Contact',
     current: 'AI undergraduate at Hanyang University ERICA', expected: 'Expected Feb. 2027', completed: 'Completed Feb. 2025',
@@ -25,7 +25,7 @@ const ui = {
   ko: {
     choose: '포트폴리오 · 2026', gateTitle: <>안녕하세요,<br /><em>김서경입니다.</em></>,
     readCode: '01', readTitle: '정보', readBody: '이력, 프로젝트, 경험.',
-    playCode: '02', playTitle: '인터랙티브', playBody: '움직이고 누르며 탐색합니다.', enter: '열기 ↗', comingSoon: '준비 중',
+    playCode: '02', playTitle: '인터랙티브', playBody: '움직이고 누르며 탐색합니다.', enter: '열기 ↗',
     startOver: '모드 선택', profile: '프로필', home: 'HOME', eng: 'Eng', kor: 'Kor', switchEnglish: 'Switch to English', switchKorean: '한국어로 변경',
     education: '학력', internships: '인턴십', projects: '프로젝트', activities: '활동', awards: '수상', skills: '기술', other: '다른 경험', contact: '연락처',
     current: '한양대학교 ERICA 인공지능학과 학부생', expected: '2027년 2월 졸업 예정', completed: '2025년 2월 졸업',
@@ -293,8 +293,11 @@ function ModeGate({ locale, setLocale, choose }: { locale: Locale; setLocale: (l
       <button className="mode-option mode-option-info" onClick={() => choose('info')}>
         <span>{t.readCode}</span><span className="option-preview">Aa</span><strong>{t.readTitle}</strong><p>{t.readBody}</p><b>{t.enter}</b>
       </button>
-      <button className="mode-option mode-option-play" type="button" disabled aria-label={`${t.playTitle} — ${t.comingSoon}`}>
-        <span>{t.playCode}</span><span className="option-orbit"><i /><i /><i /></span><strong>{t.playTitle}</strong><p>{t.playBody}</p><b>{t.comingSoon}</b>
+      <button className="mode-option mode-option-play" type="button" onClick={event => {
+        const rect = event.currentTarget.querySelector('.option-orbit')?.getBoundingClientRect();
+        choose('play', rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : undefined);
+      }}>
+        <span>{t.playCode}</span><span className="option-orbit"><i /><i /><i /></span><strong>{t.playTitle}</strong><p>{t.playBody}</p><b>{t.enter}</b>
       </button>
     </div>
   </main>;
@@ -390,7 +393,7 @@ function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   </main>;
 }
 
-function TiltCard({ children, className = '' }: { children: ReactNode; className?: string }) {
+function TiltCard({ children, className = '', onActivate, label, expanded }: { children: ReactNode; className?: string; onActivate?: () => void; label?: string; expanded?: boolean }) {
   const move = (event: ReactPointerEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - .5;
@@ -401,7 +404,13 @@ function TiltCard({ children, className = '' }: { children: ReactNode; className
     event.currentTarget.style.setProperty('--gy', `${(y + .5) * 100}%`);
   };
   const reset = (event: ReactPointerEvent<HTMLElement>) => { event.currentTarget.style.setProperty('--ry', '0deg'); event.currentTarget.style.setProperty('--rx', '0deg'); };
-  return <article className={`tilt-card ${className}`} onPointerMove={move} onPointerLeave={reset}>{children}</article>;
+  const keyDown = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (!onActivate || (event.key !== 'Enter' && event.key !== ' ')) return;
+    event.preventDefault();
+    onActivate();
+  };
+  return <article className={`tilt-card ${className}`} onPointerMove={move} onPointerLeave={reset} onClick={onActivate} onKeyDown={keyDown}
+    role={onActivate ? 'button' : undefined} tabIndex={onActivate ? 0 : undefined} aria-label={label} aria-expanded={onActivate ? expanded : undefined}>{children}</article>;
 }
 
 function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (locale: Locale) => void; reset: () => void }) {
@@ -414,17 +423,21 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const [unlocked, setUnlocked] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [boxOffset, setBoxOffset] = useState(0);
+  const [activeProject, setActiveProject] = useState<number | null>(null);
   const boxGesture = useRef({ active: false, startY: 0, side: 1 });
+  const constellationGesture = useRef({ active: false, startX: 0 });
   const tiltInput = useRef(0);
   const ballPhysics = useRef({ position: 0, velocity: 0, lastTime: 0 });
   const micro = locale === 'en' ? {
     lockKicker: 'INTERACTIVE / 02', lockTitle: <>How much would you<br />like to <em>see?</em></>,
     drag: 'LOWER EITHER SIDE, THEN RELEASE',
     levels: ['BRIEF', 'STANDARD', 'DETAILED'], depth: 'DETAIL',
+    explore: 'SELECT · SWIPE · USE ARROW KEYS', focus: 'PROJECT FOCUS', close: 'CLOSE', openProject: 'Open project', selectedTopic: 'Selected topic',
   } : {
     lockKicker: '인터랙티브 / 02', lockTitle: <>얼마나 자세히<br /><em>볼까요?</em></>,
     drag: '왼쪽이나 오른쪽을 잡고 내려보세요',
     levels: ['간단히', '기본', '자세히'], depth: '상세도',
+    explore: '선택 · 스와이프 · 방향키', focus: '프로젝트 집중 보기', close: '닫기', openProject: '프로젝트 열기', selectedTopic: '현재 선택한 주제',
   };
 
   useEffect(() => {
@@ -440,6 +453,35 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
   const selectTopic = (index: number) => {
     setActiveTopic(index);
     setVisitedTopics(current => current.includes(index) ? current : [...current, index]);
+  };
+  const stepTopic = (direction: number) => selectTopic((activeTopic + direction + playTopics.length) % playTopics.length);
+  const moveConstellation = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - .5;
+    const y = (event.clientY - rect.top) / rect.height - .5;
+    event.currentTarget.style.setProperty('--field-x', `${x * 12}px`);
+    event.currentTarget.style.setProperty('--field-y', `${y * 12}px`);
+  };
+  const resetConstellation = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.currentTarget.style.setProperty('--field-x', '0px');
+    event.currentTarget.style.setProperty('--field-y', '0px');
+  };
+  const beginConstellation = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest('button')) return;
+    constellationGesture.current = { active: true, startX: event.clientX };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+  const endConstellation = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!constellationGesture.current.active) return;
+    constellationGesture.current.active = false;
+    const distance = event.clientX - constellationGesture.current.startX;
+    if (Math.abs(distance) > 42) stepTopic(distance < 0 ? 1 : -1);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  };
+  const constellationKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    stepTopic(event.key === 'ArrowRight' ? 1 : -1);
   };
   const setDepth = (value: number) => {
     const next = Math.max(0, Math.min(100, value));
@@ -543,16 +585,27 @@ function PlayMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     <div className="scroll-progress" aria-hidden="true"><i style={{ width: `${scrollProgress}%` }} /></div>
     <CategoryBar locale={locale} setLocale={setLocale} reset={reset} inverse />
     <section className="play-hero" id="play-top"><div className="play-heading"><p>{t.playKicker}</p><h1>{t.playTitleMain}</h1><span>{t.playIntro}</span></div>
-      <div className="constellation">
+      <div className="constellation" tabIndex={0} aria-label={micro.explore} onPointerMove={moveConstellation} onPointerLeave={resetConstellation} onPointerDown={beginConstellation} onPointerUp={endConstellation} onPointerCancel={endConstellation} onKeyDown={constellationKey}>
         <div className="orbit-ring ring-one" /><div className="orbit-ring ring-two" />
         {playTopics.map((item, index) => <button className={`orbit-node node-${index + 1}${activeTopic === index ? ' active' : ''}${visitedTopics.includes(index) ? ' visited' : ''}`} key={item.key} onClick={() => selectTopic(index)} aria-pressed={activeTopic === index}><i>{item.code}</i>{localize(item.label)}</button>)}
         <div className="signal-card" aria-live="polite"><p>{t.selectedSignal} / {topic.code}</p><h2>{localize(topic.title)}</h2>{detailLevel >= 1 && <span>{localize(topic.body)}</span>}{detailLevel === 2 && <small>{localize(playTopicDetails[activeTopic])}</small>}</div>
+        <span className="constellation-hint" aria-hidden="true">{micro.explore}</span>
       </div>
     </section>
 
-    <section className="play-projects"><header><p>{t.selectedProjects}</p><span>{t.tiltHint}</span></header><div className="play-project-grid">
-      {projects.map((project, index) => <TiltCard className={`play-project project-${index + 1}`} key={project.number}><div><span>{project.number}</span><span>{project.date}</span></div><h2>{localize(project.title)}</h2>{detailLevel >= 1 && <p>{localize(project.detail)}</p>}{detailLevel === 2 && <ul>{playProjectDetails[index].map(item => <li key={item.en}>{localize(item)}</li>)}</ul>}<footer><div>{project.tags.map(tag => <i key={tag}>{tag}</i>)}</div>{project.href && <a href={project.href} target="_blank" rel="noreferrer">↗</a>}</footer></TiltCard>)}
-    </div></section>
+    <section className="play-projects"><header><p>{t.selectedProjects}</p><span>{t.tiltHint}</span></header><div className={`play-project-grid${activeProject !== null ? ' has-focus' : ''}`}>
+      {projects.map((project, index) => <TiltCard className={`play-project project-${index + 1}${activeProject === index ? ' is-focused' : ''}`} key={project.number}
+        onActivate={() => setActiveProject(current => current === index ? null : index)} label={`${micro.openProject}: ${localize(project.title)}`} expanded={activeProject === index}>
+        <div><span>{project.number}</span><span>{project.date}</span></div><h2>{localize(project.title)}</h2>{detailLevel >= 1 && <p>{localize(project.detail)}</p>}{detailLevel === 2 && <ul>{playProjectDetails[index].map(item => <li key={item.en}>{localize(item)}</li>)}</ul>}<footer><div>{project.tags.map(tag => <i key={tag}>{tag}</i>)}</div><b aria-hidden="true">{activeProject === index ? '−' : '+'}</b></footer>
+      </TiltCard>)}
+    </div>
+    {activeProject !== null && <section className="project-focus" aria-live="polite">
+      <header><p>{micro.focus} / {projects[activeProject].number}</p><button type="button" onClick={() => setActiveProject(null)}>{micro.close} ×</button></header>
+      <div className="focus-body"><div><span>{micro.selectedTopic} · {localize(playTopics[activeTopic].label)}</span><h2>{localize(projects[activeProject].title)}</h2><p>{localize(projects[activeProject].detail)}</p></div>
+        <aside><div>{projects[activeProject].tags.map(tag => <i key={tag}>{tag}</i>)}</div>{detailLevel === 2 && <ul>{playProjectDetails[activeProject].map(item => <li key={item.en}>{localize(item)}</li>)}</ul>}{projects[activeProject].href && <a href={projects[activeProject].href} target="_blank" rel="noreferrer" onClick={event => event.stopPropagation()}>{micro.openProject} ↗</a>}</aside>
+      </div>
+    </section>}
+    </section>
 
     {detailLevel === 2 && <FullArchive locale={locale} />}
 
