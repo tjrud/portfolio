@@ -237,7 +237,87 @@ const verifiedEnglishTerms: Record<string, string> = {
   '한양대 ERICA RC 멘토 활동': 'Residential College Mentoring | Hanyang University ERICA',
 };
 
-const sourceText = (locale: Locale, value: string) => locale === 'en' ? (verifiedEnglishTerms[value] ?? value) : value;
+const verifiedKoreanTerms: Record<string, string> = {
+  'B.S. in Artificial Intelligence (Expected Feb. 2027)': '인공지능학 학사 과정 (2027년 2월 졸업 예정)',
+  'Hanyang University ERICA | Mar. 2025 – Feb. 2027': '한양대학교 ERICA | 2025년 3월–2027년 2월',
+  'B.S. in Computer and Information Communication Engineering': '컴퓨터정보통신공학 학사',
+  'Daejeon University | Mar. 2023 – Feb. 2025': '대전대학교 | 2023년 3월–2025년 2월',
+  'Autonomous Driving and Flight Systems': '자율주행 및 비행 시스템',
+  'Perception, localization, sensor fusion, and motion control for autonomous vehicles and unmanned aerial systems': '자율주행 차량과 무인 비행 시스템의 인지, 위치 추정, 센서 융합 및 모션 제어',
+  'Vision-based navigation, obstacle detection, path planning, and real-time decision-making in dynamic environments': '동적 환경에서의 비전 기반 내비게이션, 장애물 탐지, 경로 계획 및 실시간 의사결정',
+  'large language model': '대규모 언어 모델',
+  'Application of LLMs in multimodal systems and domain-specific adaptation': '멀티모달 시스템과 도메인 특화 적응에 LLM 적용',
+  'Efficient fine-tuning, prompt engineering, and deployment in real-world applications': '실제 응용을 위한 효율적인 파인튜닝, 프롬프트 엔지니어링 및 배포',
+  'Anomaly Detection': '이상 탐지',
+  'Vision-based anomaly detection in manufacturing, medical imaging, and autonomous systems': '제조, 의료 영상 및 자율 시스템의 비전 기반 이상 탐지',
+  'Integration with MLOps pipelines for real-time monitoring and automated response': '실시간 모니터링과 자동 대응을 위한 MLOps 파이프라인 연동',
+  'Language': '프로그래밍 언어',
+  'Machine Learning / AI': '머신러닝 / AI',
+  'MLOps & Tools': 'MLOps 및 개발 도구',
+  'Robotics & Embedded': '로보틱스 및 임베디드',
+  'ROS2, rclcpp, rclpy, Sensor integration (IMU, camera, etc.)': 'ROS2, rclcpp, rclpy, 센서 통합(IMU, 카메라 등)',
+  'Web Development': '웹 개발',
+  'Other': '협업 도구',
+  'Collaboration: Notion, Slack': '협업: Notion, Slack',
+  'Molpaxbio — Internship (Jan 2025 – Feb 2025)': '몰팩스바이오 — 인턴십 (2025년 1월–2월)',
+  'Molpaxbio Co., Ltd. | Daejeon, Korea | AI-based digital pathology and cancer diagnostics startup': '주식회사 몰팩스바이오 | 대전 | AI 기반 디지털 병리 및 암 진단 스타트업',
+  'Participated in CES preparation, including training on AI diagnostic software and algorithms': 'AI 진단 소프트웨어와 알고리즘 교육을 포함한 CES 준비에 참여',
+  'Assisted at the CES exhibition booth, engaging with industry experts and addressing inquiries': 'CES 전시 부스에서 업계 전문가 응대와 문의 대응 지원',
+  'Gained hands-on experience with medical imaging data preprocessing, including noise removal, filtering, and basic pattern analysis': '노이즈 제거, 필터링, 기초 패턴 분석 등 의료 영상 데이터 전처리 실무 경험',
+  'Learned and applied foundational techniques in medical imaging-based AI analysis using specialized software tools': '전문 소프트웨어를 활용한 의료 영상 기반 AI 분석 기초 기술 학습 및 적용',
+  'Developed skills in AI-based medical video classification and anomaly detection models, conducting experiments with labeled datasets': '라벨 데이터셋으로 AI 기반 의료 영상 분류 및 이상 탐지 모델 실험 수행',
+  'Supported team projects by optimizing data processing workflows and evaluating model performance': '데이터 처리 흐름 최적화와 모델 성능 평가를 통해 팀 프로젝트 지원',
+  'HCNC — Internship (Jul 2025 – Aug 2025)': 'HCNC — 인턴십 (2025년 7월–8월)',
+  'HCNC — Internship (Jan 2026 – Feb 2026 )': 'HCNC — 인턴십 (2026년 1월–2월)',
+  'HCNC Co., Ltd. | Pangyo, Korea | Smart factory and AI-integrated industrial solutions company': '주식회사 HCNC | 판교 | 스마트 팩토리 및 AI 융합 산업 솔루션 기업',
+  'Learned core concepts of AI-based visual inspection and anomaly detection for manufacturing surface quality control': '제조 표면 품질 관리를 위한 AI 기반 비전 검사와 이상 탐지 핵심 개념 학습',
+  'Studied industrial AI applications and analyzed how real-world manufacturing data differs from research datasets due to noise, imbalance, and incomplete labeling': '노이즈, 불균형, 불완전한 라벨로 인해 실제 제조 데이터가 연구용 데이터셋과 다른 점을 분석',
+  'Researched recent trends in anomaly detection, synthetic data generation, and data augmentation techniques for industrial defect inspection': '산업 결함 검사를 위한 이상 탐지, 합성 데이터 생성 및 데이터 증강 최신 동향 조사',
+  'Participated in capstone project planning, including dataset collection strategy, model training direction, and MLOps-based system design': '데이터셋 수집 전략, 모델 학습 방향, MLOps 기반 시스템 설계를 포함한 캡스톤 프로젝트 기획 참여',
+  'Gained practical understanding of the full AI development workflow, from data preprocessing and quality management to model operation and system maintenance': '데이터 전처리와 품질 관리부터 모델 운영과 시스템 유지보수까지 AI 개발 전 과정 이해',
+  'Conducted research on AI vision-based anomaly detection models for industrial surface defect inspection, with a focus on steel and H-beam surface defects': '철강 및 H빔 표면 결함을 중심으로 산업 표면 결함 검사용 AI 비전 이상 탐지 모델 연구',
+  'Collected and analyzed public industrial defect datasets, including Severstal, NEU, and MVTec, considering domain-specific factors such as lighting variation and surface reflection': '조명 변화와 표면 반사 등 도메인 특성을 고려해 Severstal, NEU, MVTec 공개 산업 결함 데이터셋 수집 및 분석',
+  'Designed an ensemble-based meta-model structure by combining fast classification models and precise localization models using normalized anomaly scores and feature representations': '정규화된 이상 점수와 특징 표현을 활용해 빠른 분류 모델과 정밀 위치 추정 모델을 결합한 앙상블 메타 모델 구조 설계',
+  'Researched automated labeling workflows using SAM, CVAT, and AnyLabeling to reduce labeling bottlenecks in large-scale industrial datasets': '대규모 산업 데이터셋의 라벨링 병목을 줄이기 위해 SAM, CVAT, AnyLabeling 기반 자동 라벨링 흐름 조사',
+  'Studied MLOps pipeline components, including data and model versioning, retraining triggers, performance drift monitoring, and automated operation strategies': '데이터·모델 버전 관리, 재학습 조건, 성능 드리프트 모니터링, 자동 운영 전략 등 MLOps 파이프라인 구성 요소 연구',
+  'AI Vision-Based Anomaly Detection: Image Data Preprocessing and MLOps Application Development | 2025 ~ 2026': 'AI 비전 기반 이상 탐지: 이미지 데이터 전처리 및 MLOps 애플리케이션 개발 | 2025–2026',
+  'Automated image data preprocessing & labeling pipeline development': '이미지 데이터 전처리 및 라벨링 파이프라인 자동화',
+  'MLOps application for training, deployment, and visualization': '학습, 배포 및 시각화를 위한 MLOps 애플리케이션 개발',
+  'Autonomous Driving RC Car Development | ORDA, 2025': '자율주행 RC카 개발 | ORDA, 2025',
+  'Implemented lane detection (1-lane / 2-lane mode) and object detection (YOLOv8-based vehicle detection & avoidance) modules in ROS2': 'ROS2에서 1·2차선 모드 차선 인식과 YOLOv8 기반 차량 탐지·회피 모듈 구현',
+  'Developed obstacle avoidance logic with offset calculation and lane-change completion verification': '오프셋 계산과 차선 변경 완료 검증을 포함한 장애물 회피 로직 개발',
+  'Converted YOLOv8n to ONNX for real-time inference on embedded devices': '임베디드 장치 실시간 추론을 위해 YOLOv8n을 ONNX로 변환',
+  'LG Innotek AX Expert Training Program | AISI, 2026 | AI Transformation & Manufacturing AI Training Assistant': 'LG이노텍 AX 전문가 양성 과정 | AISI, 2026 | AI 전환 및 제조 AI 교육 조교',
+  'Supported hands-on AI/AX training sessions for manufacturing professionals': '제조업 실무자 대상 AI/AX 실습 교육 지원',
+  'Assisted with Python, data analysis, machine learning practice, debugging, and lab environment setup': 'Python, 데이터 분석, 머신러닝 실습, 디버깅 및 실습 환경 구성 지원',
+  'Guided trainees through practical exercises and helped resolve technical issues during sessions': '교육생 실습 진행과 수업 중 기술 문제 해결 지원',
+  '제 1회 한양대학교 ERICA 자율주행 경진대회 주관 | ORDA, 2026.01': '제1회 한양대학교 ERICA 자율주행 경진대회 주관 | ORDA, 2026년 1월',
+  'Organized and operated the 1st Hanyang University ERICA Autonomous Driving Competition': '제1회 한양대학교 ERICA 자율주행 경진대회 기획 및 운영',
+  'Coordinated participants, competition schedules, event logistics, and on-site communication': '참가자, 경기 일정, 행사 운영 및 현장 소통 조율',
+  'Managed registration, safety procedures, and overall event flow to ensure smooth competition operations': '원활한 대회 운영을 위해 참가 등록, 안전 절차 및 전체 행사 흐름 관리',
+  '65th National Undergraduate Symposium in Biology | NusB, 2026 | Academic Committee Member': '제65회 전국대학생생물학심포지엄 | NusB, 2026 | 학술위원',
+  'Served as a member of the Academic Committee, participating in neuroscience paper review, study, and presentation activities': '학술위원으로서 신경과학 논문 검토, 학습 및 발표 활동 참여',
+  'Studied neural replay, memory, and predictive brain mechanisms through neuroscience research papers': '신경과학 논문을 통해 신경 리플레이, 기억 및 예측적 뇌 메커니즘 연구',
+  'Explored connections between biological learning and AI, including experience replay, internal models, and generative prediction': '경험 재현, 내부 모델, 생성적 예측 등 생물학적 학습과 AI의 연결 탐구',
+  'Developing a rule-based manuscript revision tool for Division 2 to support automated editorial review and consistency checks': 'Division 2의 자동 편집 검토와 일관성 확인을 지원하는 규칙 기반 원고 교정 도구 개발',
+  'AI-Based Intersection Vehicle Counting & Monitoring System | Personal Project, 2026': 'AI 기반 교차로 차량 계수 및 모니터링 시스템 | 개인 프로젝트, 2026',
+  'Developed a YOLO-based video analysis system to detect, track, and count vehicles entering and exiting intersections': '교차로 진입·진출 차량을 탐지, 추적 및 계수하는 YOLO 기반 영상 분석 시스템 개발',
+  'Improved counting accuracy under occlusion and nighttime conditions using BoT-SORT and ReID-based tracking': 'BoT-SORT와 ReID 기반 추적으로 가림 및 야간 환경의 계수 정확도 개선',
+  'Built an integrated dashboard for analysis control, progress monitoring, and automated CSV result visualization': '분석 제어, 진행 상황 모니터링 및 CSV 결과 자동 시각화를 위한 통합 대시보드 구축',
+  'Image Data Preprocessing and MLOps Application, | 한양대학교 ERICA 2026.06': '이미지 데이터 전처리 및 MLOps 애플리케이션 | 한양대학교 ERICA, 2026년 6월',
+  'Language Skills': '어학 성적',
+  'TOEIC 935 | YBM | Dec 2024': 'TOEIC 935점 | YBM | 2024년 12월',
+  'Extracurricular Work Experience': '기타 경력',
+  'Snowy Village - Manager, 2018.06 ~ 2019.06': 'Snowy Village — 매니저 | 2018년 6월–2019년 6월',
+  'K - Pop Karaoke - Bartender, 2019.07 ~ 2020.03': 'K-Pop Karaoke — 바텐더 | 2019년 7월–2020년 3월',
+  'Extracurricular Awards': '기타 수상',
+  'Extracurricular Activities': '기타 활동',
+  '한양대 ERICA RC center 멘토, | 2025.09 ~ 2026.06': '한양대학교 ERICA RC 센터 멘토 | 2025년 9월–2026년 6월',
+};
+
+const sourceText = (locale: Locale, value: string) => locale === 'en'
+  ? (verifiedEnglishTerms[value] ?? value)
+  : (verifiedKoreanTerms[value] ?? value);
 
 const playTopics: Array<{ key: string; label: Localized; code: string; title: Localized; body: Localized }> = [
   { key: 'vision', code: '01', label: { en: 'VISION', ko: '비전' }, title: { en: 'Seeing industrial and road scenes', ko: '산업 현장과 도로 장면을 보는 기술' }, body: { en: 'Surface-defect inspection, medical image preprocessing, and vehicle detection are the recurring vision problems in my work.', ko: '표면 결함 검사, 의료 영상 전처리, 차량 탐지는 제가 반복해서 다뤄온 비전 문제입니다.' } },
@@ -319,7 +399,7 @@ function FullArchive({ locale }: { locale: Locale }) {
     ? ['Education', 'Research Interests', 'Skills', 'Professional Experience', 'Projects & Activities', 'Awards', 'Additional Information']
     : ['학력', '연구 관심 분야', '기술', '경력', '프로젝트 및 활동', '수상', '기타 정보'];
   return <section className="play-full-archive">
-    <header><p>{locale === 'en' ? 'FULL RECORD' : '전체 기록'}</p><h2>{locale === 'en' ? 'Everything, in detail.' : '전체 내용을 자세히.'}</h2><span>{locale === 'en' ? 'The complete record from the Information page.' : 'Information 페이지의 전체 기록을 누락 없이 담았습니다.'}</span></header>
+    <header><p>{locale === 'en' ? 'FULL RECORD' : '전체 기록'}</p><h2>{locale === 'en' ? 'Everything, in detail.' : '전체 내용을 자세히.'}</h2><span>{locale === 'en' ? 'The complete record from the Information page.' : '정보 페이지의 전체 기록을 누락 없이 담았습니다.'}</span></header>
     <div className="full-record-body">
       <CvSection id="full-education" number="01" title={labels[0]}><div className="source-list">{sourceEducation.map(item => <SourceDetail key={item.title} title={text(item.title)} meta={text(item.meta)} />)}</div></CvSection>
       <CvSection id="full-research" number="02" title={labels[1]}><div className="source-list">{sourceResearch.map(item => <SourceDetail key={item.title} title={text(item.title)} bullets={item.bullets.map(text)} />)}</div></CvSection>
@@ -345,12 +425,12 @@ function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
     : [['education', '학력'], ['research', '연구 관심 분야'], ['skills', '기술'], ['work', '경력'], ['projects', '프로젝트 및 활동'], ['awards', '수상'], ['other', '기타 정보']];
   return <main className="info-mode"><CategoryBar locale={locale} setLocale={setLocale} reset={reset} />
     <div className="cv-layout"><aside className="cv-sidebar">
-      <div><a className="brand light-brand" href="#cv-top">SeoKyoung Kim</a><p>INDEX</p></div>
+      <div><a className="brand light-brand" href="#cv-top">SeoKyoung Kim</a><p>{locale === 'en' ? 'INDEX' : '목차'}</p></div>
       <nav>{sections.map(([href, label]) => <a href={`#${href}`} key={href}>{label}</a>)}</nav>
       <div className="cv-side-bottom"><span>© 2026 SEOKYOUNG KIM.</span></div>
     </aside>
     <article className="cv-document" id="cv-top">
-      <header className="cv-hero source-hero"><p>{t.profile} / 2026</p><h1>{locale === 'en' ? <>SeoKyoung<br />Kim</> : <>김서경<br />SeoKyoung Kim</>}</h1><div><strong>Email: sk0829@hanyang.ac.kr</strong><span>GitHub: https://github.com/tjrud</span></div></header>
+      <header className="cv-hero source-hero"><p>{t.profile} / 2026</p><h1>{locale === 'en' ? <>SeoKyoung<br />Kim</> : <>김서경<br />SeoKyoung Kim</>}</h1><div><strong>{locale === 'en' ? 'Email' : '이메일'}: sk0829@hanyang.ac.kr</strong><span>GitHub: https://github.com/tjrud</span></div></header>
 
       <CvSection id="education" number="01" title={sections[0][1]}>
         <div className="source-list">{sourceEducation.map(item => <SourceDetail key={item.title} title={text(item.title)} meta={text(item.meta)} />)}</div>
@@ -385,7 +465,7 @@ function InfoMode({ locale, setLocale, reset }: { locale: Locale; setLocale: (lo
         </div>
       </CvSection>
 
-      <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">EMAIL ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
+      <footer className="cv-contact"><p>{t.contact}</p><h2>sk0829@hanyang.ac.kr</h2><div><a href="mailto:sk0829@hanyang.ac.kr">{locale === 'en' ? 'EMAIL' : '이메일'} ↗</a><a href="https://github.com/tjrud" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
     </article></div>
   </main>;
 }
